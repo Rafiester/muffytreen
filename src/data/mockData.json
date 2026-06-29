@@ -1,0 +1,61 @@
+{
+  "profile": {
+    "name": "Alex Rivera",
+    "title": "Creative Technologist & Interface Designer",
+    "bio": "Building aesthetic, high-performance web applications. Focused on creative frontend engineering and micro-interactions.",
+    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&h=300&q=80",
+    "socials": {
+      "github": "https://github.com",
+      "twitter": "https://twitter.com",
+      "linkedin": "https://linkedin.com",
+      "email": "mailto:alex@example.com"
+    }
+  },
+  "links": [
+    {
+      "id": "1",
+      "title": "Interactive Design Portfolio",
+      "description": "My latest work, case studies, and playground experiments.",
+      "url": "https://example.com/portfolio",
+      "icon": "globe",
+      "featured": true,
+      "accentColor": "#6366f1"
+    },
+    {
+      "id": "2",
+      "title": "Weekly Tech & Design Newsletter",
+      "description": "In-depth articles about UX, Tailwind, and React compilation.",
+      "url": "https://example.com/newsletter",
+      "icon": "newsletter",
+      "featured": false,
+      "accentColor": "#ec4899"
+    },
+    {
+      "id": "3",
+      "title": "My YouTube Channel",
+      "description": "Weekly tutorials on Next.js, Framer Motion, and web dev tips.",
+      "url": "https://youtube.com",
+      "icon": "youtube",
+      "featured": false,
+      "accentColor": "#ef4444"
+    },
+    {
+      "id": "4",
+      "title": "Figma Design Resources",
+      "description": "Download free Tailwind UI components and Figma UI kits.",
+      "url": "https://figma.com",
+      "icon": "figma",
+      "featured": false,
+      "accentColor": "#0acf83"
+    },
+    {
+      "id": "5",
+      "title": "Open Source Contributions",
+      "description": "Check out my repositories, stars, and pull requests.",
+      "url": "https://github.com",
+      "icon": "github",
+      "featured": false,
+      "accentColor": "#171717"
+    }
+  ]
+}
