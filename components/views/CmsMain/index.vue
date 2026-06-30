@@ -58,6 +58,7 @@ const saving = ref(false);
 const toast = ref<{ message: string; type: 'success' | 'error' } | null>(null);
 
 useHead({
+  title: 'CMS Space',
   htmlAttrs: {
     style: 'background-color: #1e1d23 !important;'
   },
