@@ -5,7 +5,7 @@
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2.5">
           <div className="leading-none">
-            <h1 className="text-sm font-semibold text-white/85 tracking-tight">CMS</h1>
+            <h1>CMS</h1>
           </div>
         </div>
       </div>
