@@ -183,9 +183,10 @@ const isCustomIcon = computed(() => {
             isRetro 
               ? 'text-black group-hover:translate-x-1.5' 
               : theme === 'electric'
-                ? 'text-emerald-400 group-hover:text-emerald-300 group-hover:translate-x-1'
+                ? 'group-hover:translate-x-1'
                 : 'text-[var(--text-body)] group-hover:text-[var(--text-title)] group-hover:translate-x-1'
           ]"
+          :style="theme === 'electric' && activeAccentColor ? { color: activeAccentColor } : {}"
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
