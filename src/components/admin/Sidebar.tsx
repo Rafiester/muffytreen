@@ -61,7 +61,7 @@ export default function Sidebar({
       <aside 
         className={`
           fixed top-0 left-0 h-full w-[260px] z-50
-          bg-[#1a1a24]/95 backdrop-blur-xl
+          bg-[#1e1d23]/95 backdrop-blur-xl
           border-r border-white/[0.04]
           flex flex-col justify-between
           transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]
