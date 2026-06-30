@@ -42,3 +42,8 @@ next-env.d.ts
 
 # docs
 AI.md
+
+# nuxt
+.nuxt
+.output
+.env
