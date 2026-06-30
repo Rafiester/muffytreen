@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from '#app';
 import profileData from '../../../data/mockData.json';
 import { supabase, hasSupabaseConfig } from '../../../lib/supabase';
-import DashboardHeader from '../../admin/DashboardHeader/index.vue';
+
 import ProfileEditor from '../../admin/ProfileEditor/index.vue';
 import SocialsEditor from '../../admin/SocialsEditor/index.vue';
 import LinksManager from '../../admin/LinksManager/index.vue';
@@ -443,8 +443,7 @@ const handleLogout = () => {
 
     <!-- Main Workspace Frame — permanently offset by sidebar width (260px) -->
     <div class="flex-1 flex flex-col min-h-screen pl-[260px]">
-      <!-- Dynamic Header -->
-      <DashboardHeader />
+
 
       <!-- Content Container -->
       <main class="max-w-full w-full mx-auto px-6 py-10 flex-1 flex flex-col justify-start">
