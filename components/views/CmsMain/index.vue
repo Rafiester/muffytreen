@@ -496,7 +496,8 @@ const handleLogout = () => {
             :settings="{
               active_theme: profile.active_theme,
               meta_title: profile.meta_title,
-              meta_description: profile.meta_description
+              meta_description: profile.meta_description,
+              electricAccentColor: profile.electricAccentColor
             }" 
             @change="handleSettingsChange" 
           />

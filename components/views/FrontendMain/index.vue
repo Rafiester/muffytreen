@@ -47,7 +47,15 @@ const error = ref<string | null>(null);
 
 const isRetro = computed(() => theme.value === 'retro');
 
+const pageTitle = computed(() => profile.value?.socials?.meta_title || profile.value?.name || 'Personal Space');
+const pageDescription = computed(() => profile.value?.socials?.meta_description || profile.value?.bio || 'Personal links and portfolio.');
 
+useHead({
+  title: pageTitle,
+  meta: [
+    { name: 'description', content: pageDescription }
+  ]
+});
 
 const handleThemeChange = (newTheme: Theme) => {
   theme.value = newTheme;
