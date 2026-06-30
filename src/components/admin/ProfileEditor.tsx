@@ -19,9 +19,11 @@ interface Profile {
 interface ProfileEditorProps {
   profile: Profile;
   onChange: <K extends keyof Profile>(key: K, value: Profile[K]) => void;
+  onSave?: () => void;
+  saving?: boolean;
 }
 
-export default function ProfileEditor({ profile, onChange }: ProfileEditorProps) {
+export default function ProfileEditor({ profile, onChange, onSave, saving = false }: ProfileEditorProps) {
   return (
     <div className="bg-[#1e1d23]/80 border border-white/[0.04] p-6 rounded-2xl backdrop-blur-sm">
       <h2 className="text-xs font-bold uppercase tracking-[0.12em] !text-white/30 mb-6">
@@ -42,21 +44,21 @@ export default function ProfileEditor({ profile, onChange }: ProfileEditorProps)
         </div>
 
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="profession-title">Title / Profession</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="display-title">Professional Title</label>
           <input
-            id="profession-title"
+            id="display-title"
             type="text"
             value={profile.title}
             onChange={(e) => onChange('title', e.target.value)}
             className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
-            placeholder="Creative Technologist"
+            placeholder="Product Designer & Engineer"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="bio-description">Bio / Description</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="display-bio">Short Bio</label>
           <textarea
-            id="bio-description"
+            id="display-bio"
             value={profile.bio}
             onChange={(e) => onChange('bio', e.target.value)}
             rows={3}
@@ -76,6 +78,18 @@ export default function ProfileEditor({ profile, onChange }: ProfileEditorProps)
             placeholder="https://images.unsplash.com/..."
           />
         </div>
+
+        {onSave && (
+          <div className="pt-2 flex justify-end">
+            <button
+              onClick={onSave}
+              disabled={saving}
+              className="px-4 py-2 bg-[#af413c] hover:bg-[#c94a44] disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-[#af413c]/10"
+            >
+              {saving ? 'Saving Profile...' : 'Save Profile Details'}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

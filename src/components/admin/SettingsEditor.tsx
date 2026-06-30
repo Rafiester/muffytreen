@@ -11,9 +11,11 @@ interface Settings {
 interface SettingsEditorProps {
   settings: Settings;
   onChange: (key: keyof Settings, value: string) => void;
+  onSave?: () => void;
+  saving?: boolean;
 }
 
-export default function SettingsEditor({ settings, onChange }: SettingsEditorProps) {
+export default function SettingsEditor({ settings, onChange, onSave, saving = false }: SettingsEditorProps) {
   return (
     <div className="bg-white/[0.02] border border-white/[0.04] p-6 rounded-2xl backdrop-blur-sm">
       <h2 className="text-xs font-bold uppercase tracking-[0.12em] !text-white/30 mb-6">
@@ -29,9 +31,9 @@ export default function SettingsEditor({ settings, onChange }: SettingsEditorPro
             onChange={(e) => onChange('active_theme', e.target.value)}
             className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
           >
-            <option value="minimalist">Minimal Light</option>
-            <option value="minimalist-dark">Minimal Dark</option>
-            <option value="retro">90s Retro</option>
+            <option value="minimalist">Minimalist (Light)</option>
+            <option value="minimalist-dark">Minimalist (Dark)</option>
+            <option value="retro">Retro Terminal (Classic)</option>
           </select>
         </div>
 
@@ -58,6 +60,18 @@ export default function SettingsEditor({ settings, onChange }: SettingsEditorPro
             placeholder="Alex Rivera's links, portfolio, and newsletters..."
           />
         </div>
+
+        {onSave && (
+          <div className="pt-2 flex justify-end">
+            <button
+              onClick={onSave}
+              disabled={saving}
+              className="px-4 py-2 bg-[#af413c] hover:bg-[#c94a44] disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-[#af413c]/10"
+            >
+              {saving ? 'Saving Settings...' : 'Save Settings'}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

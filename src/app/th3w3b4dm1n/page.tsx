@@ -432,29 +432,39 @@ export default function AdminDashboard() {
       <div className="flex-1 flex flex-col min-h-screen pl-[260px]">
         
         {/* Dynamic Header */}
-        <DashboardHeader 
-          saving={saving} 
-          onSave={saveAllChanges} 
-          onLogout={handleLogout} 
-        />
+        <DashboardHeader />
 
         {/* Content Container */}
         <main className="max-w-full w-full mx-auto px-6 py-10 flex-1 flex flex-col justify-start">
           
           {/* Active Title Block */}
           <div className="mb-2">
-            <h2 className="text-2xl font-black !text-white tracking-tight">
-              {activeTab === 'dashboard' && 'Dashboard'}
-              {activeTab === 'about' && 'About me'}
-              {activeTab === 'home' && 'Items'}
-              {activeTab === 'settings' && 'Settings'}
-            </h2>
-            <p className="text-sm !text-slate-400 mt-1">
-              {activeTab === 'dashboard' && 'Welcome to the administration panel.'}
-              {activeTab === 'about' && 'Configure your About me content.'}
-              {activeTab === 'home' && 'Configure your Items content.'}
-              {activeTab === 'settings' && 'Configure your Settings content.'}
-            </p>
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-black !text-white tracking-tight">
+                  {activeTab === 'dashboard' && 'Dashboard'}
+                  {activeTab === 'about' && 'About me'}
+                  {activeTab === 'home' && 'Items'}
+                  {activeTab === 'settings' && 'Settings'}
+                </h2>
+                <p className="text-sm !text-slate-400 mt-1">
+                  {activeTab === 'dashboard' && 'Welcome to the administration panel.'}
+                  {activeTab === 'about' && 'Configure your About me content.'}
+                  {activeTab === 'home' && 'Configure your Items content.'}
+                  {activeTab === 'settings' && 'Configure your Settings content.'}
+                </p>
+              </div>
+              {/* Floating Publish Button inside Content Area */}
+              {activeTab !== 'dashboard' && (
+                <button
+                  onClick={saveAllChanges}
+                  disabled={saving}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#af413c] hover:bg-[#c94a44] disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-md shadow-[#af413c]/20 shrink-0"
+                >
+                  {saving ? 'Saving...' : 'Publish Changes'}
+                </button>
+              )}
+            </div>
             <div className="border-b border-slate-900/60 my-3" />
           </div>
 
@@ -469,8 +479,18 @@ export default function AdminDashboard() {
 
           {activeTab === 'about' && (
             <div className="space-y-6 animate-fadeIn">
-              <ProfileEditor profile={profile} onChange={handleProfileChange} />
-              <SocialsEditor socials={profile.socials} onChange={handleSocialChange} />
+              <ProfileEditor 
+                profile={profile} 
+                onChange={handleProfileChange} 
+                onSave={saveAllChanges}
+                saving={saving}
+              />
+              <SocialsEditor 
+                socials={profile.socials} 
+                onChange={handleSocialChange} 
+                onSave={saveAllChanges}
+                saving={saving}
+              />
             </div>
           )}
 
@@ -497,6 +517,8 @@ export default function AdminDashboard() {
                   meta_description: profile.meta_description
                 }} 
                 onChange={handleSettingsChange} 
+                onSave={saveAllChanges}
+                saving={saving}
               />
             </div>
           )}
