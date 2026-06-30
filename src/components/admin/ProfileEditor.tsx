@@ -66,15 +66,63 @@ export default function ProfileEditor({ profile, onChange }: ProfileEditorProps)
         </div>
 
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="avatar-url">Avatar Image URL</label>
-          <input
-            id="avatar-url"
-            type="text"
-            value={profile.avatar}
-            onChange={(e) => onChange('avatar', e.target.value)}
-            className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
-            placeholder="https://images.unsplash.com/..."
-          />
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2">Avatar Profile Image</label>
+          <div className="flex items-center gap-4">
+            {/* Avatar Preview */}
+            <div className="w-12 h-12 rounded-full overflow-hidden bg-white/[0.03] border border-white/[0.06] flex items-center justify-center shrink-0">
+              {profile.avatar ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={profile.avatar} alt="Avatar Preview" className="w-full h-full object-cover" />
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white/20">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+              )}
+            </div>
+
+            {/* Input field and Upload */}
+            <div className="flex-1 space-y-2">
+              <div className="flex items-center gap-2">
+                <input
+                  id="avatar-url"
+                  type="text"
+                  value={profile.avatar}
+                  onChange={(e) => onChange('avatar', e.target.value)}
+                  className="flex-1 px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
+                  placeholder="Paste image URL..."
+                />
+                <label className="px-4 py-2.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/10 text-white/80 hover:text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center shrink-0 h-10">
+                  <span>Upload File</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+
+                      // Check size limit: 200KB
+                      if (file.size > 204800) {
+                        alert("File is too large! Maximum allowed size is 200KB.");
+                        return;
+                      }
+
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        if (typeof reader.result === 'string') {
+                          onChange('avatar', reader.result);
+                        }
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                  />
+                </label>
+              </div>
+              <span className="text-[10px] text-white/20 block">
+                Max size: 200KB. Square ratio (PNG/JPG/SVG) recommended.
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
