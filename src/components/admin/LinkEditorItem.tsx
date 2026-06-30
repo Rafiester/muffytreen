@@ -31,14 +31,14 @@ export default function LinkEditorItem({
   return (
     <div className="p-4 bg-white/[0.01] border border-white/[0.03] hover:border-white/[0.06] rounded-xl transition-all space-y-4">
       {/* Header bar of link panel */}
-      <div className="flex items-center justify-between pb-3 border-b border-white/[0.04]">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between pb-3 border-b border-white/[0.04] gap-4">
+        <div className="flex items-center gap-2 flex-1">
           <span className="text-[10px] font-bold text-white/20">#{idx + 1}</span>
           <input
             type="text"
             value={link.title}
             onChange={(e) => onLinkChange(idx, 'title', e.target.value)}
-            className="bg-transparent border-b border-transparent hover:border-white/20 focus:border-[#af413c]/50 text-sm font-bold text-white outline-none pb-0.5"
+            className="bg-transparent border-b border-transparent hover:border-white/20 focus:border-[#af413c]/50 text-sm font-bold text-white outline-none pb-0.5 flex-1 w-full"
             placeholder="Link Title"
           />
         </div>
