@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export type TabType = 'dashboard' | 'home' | 'about' | 'settings';
 
@@ -13,6 +13,9 @@ export default function Sidebar({
   onTabSelect,
   onLogout
 }: SidebarProps) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const menuItems: { id: TabType; label: string; icon: React.ReactNode }[] = [
     {
       id: 'dashboard',
@@ -42,6 +45,17 @@ export default function Sidebar({
       )
     }
   ];
+
+  // Close dropdown on outside clicks
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <aside 
@@ -131,24 +145,47 @@ export default function Sidebar({
         </nav>
       </div>
 
-      {/* Bottom Profile Block — Fluent acrylic card */}
-      <div className="m-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.04] flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c94a44] to-[#8b2e2a] flex items-center justify-center font-bold text-white text-xs select-none shadow-md shadow-[#af413c]/15">
-            A
+      {/* Bottom Profile Block with Dropdown Menu */}
+      <div className="relative m-3" ref={dropdownRef}>
+        {/* Dropdown Box */}
+        {dropdownOpen && (
+          <div className="absolute bottom-[calc(100%+6px)] left-0 w-full bg-[#1a1a24] border border-white/[0.06] rounded-xl p-1.5 shadow-xl animate-fadeIn z-50">
+            <button
+              onClick={() => {
+                setDropdownOpen(false);
+                onLogout();
+              }}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-white/50 hover:text-rose-400 hover:bg-rose-500/10 transition-all text-left"
+            >
+              <span>Sign Out</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12" />
+              </svg>
+            </button>
           </div>
-          <div>
-            <div className="text-xs font-semibold text-white/80 leading-tight">Administrator</div>
-            <div className="text-[11px] text-white/25 font-medium">Super User</div>
-          </div>
-        </div>
-        <button 
-          onClick={onLogout}
-          className="w-7 h-7 flex items-center justify-center rounded-lg text-white/25 hover:text-[#e8736e] hover:bg-[#af413c]/10 transition-all"
-          title="Logout"
+        )}
+
+        {/* Administrator clickable Card */}
+        <button
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          className="w-full p-3 rounded-xl bg-white/[0.03] border border-white/[0.04] hover:bg-white/[0.06] flex items-center justify-between text-left transition-all"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-3.5 h-3.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c94a44] to-[#8b2e2a] flex items-center justify-center font-bold text-white text-xs select-none shadow-md shadow-[#af413c]/15">
+              A
+            </div>
+            <div>
+              <div className="text-xs font-semibold text-white/80 leading-tight">Administrator</div>
+              <div className="text-[11px] text-white/25 font-medium">Super User</div>
+            </div>
+          </div>
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 20 20" 
+            fill="currentColor" 
+            className={`w-4 h-4 text-white/20 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}
+          >
+            <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
           </svg>
         </button>
       </div>
