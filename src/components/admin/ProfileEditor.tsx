@@ -25,7 +25,6 @@ export default function ProfileEditor({ profile, onChange }: ProfileEditorProps)
   return (
     <div className="bg-[#1e1d23]/80 border border-white/[0.04] p-6 rounded-2xl backdrop-blur-sm">
       <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-white/30 mb-6 flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#af413c]" />
         Profile Details
       </h2>
 

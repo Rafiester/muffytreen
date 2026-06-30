@@ -31,7 +31,6 @@ export default function LinksManager({
     <div className="bg-[#1e1d23]/80 border border-white/[0.04] p-6 rounded-2xl backdrop-blur-sm">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-white/30 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#af413c]" />
           Manage Links ({links.length})
         </h2>
         <button
