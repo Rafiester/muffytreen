@@ -47,7 +47,14 @@ const error = ref<string | null>(null);
 
 const isRetro = computed(() => theme.value === 'retro');
 
-const pageTitle = computed(() => profile.value?.socials?.meta_title || profile.value?.name || 'Personal Space');
+const pageTitle = computed(() => {
+  const customTitle = profile.value?.socials?.meta_title;
+  const name = profile.value?.name || 'Personal Space';
+  if (customTitle) {
+    return customTitle.includes('|') ? customTitle : `${customTitle} | ${name}`;
+  }
+  return name;
+});
 const pageDescription = computed(() => profile.value?.socials?.meta_description || profile.value?.bio || 'Personal links and portfolio.');
 
 useHead({
