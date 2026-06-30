@@ -19,6 +19,8 @@ interface Profile {
   title: string;
   bio: string;
   avatar: string;
+  meta_title?: string;
+  meta_description?: string;
   socials: Record<string, SocialCard | string>;
 }
 
@@ -53,14 +55,14 @@ const error = ref<string | null>(null);
 const isRetro = computed(() => theme.value === 'retro');
 
 const pageTitle = computed(() => {
-  const customTitle = profile.value?.socials?.meta_title;
+  const customTitle = (profile.value as any)?.meta_title || profile.value?.socials?.meta_title;
   const name = profile.value?.name || 'Personal Space';
   if (customTitle) {
     return customTitle.includes('|') ? customTitle : `${customTitle} | ${name}`;
   }
   return name;
 });
-const pageDescription = computed(() => profile.value?.socials?.meta_description || profile.value?.bio || 'Personal links and portfolio.');
+const pageDescription = computed(() => (profile.value as any)?.meta_description || profile.value?.socials?.meta_description || profile.value?.bio || 'Personal links and portfolio.');
 
 useHead({
   title: pageTitle,
@@ -113,6 +115,8 @@ onMounted(async () => {
           title: parsed.title || '',
           bio: parsed.bio || '',
           avatar: parsed.avatar || '',
+          meta_title: parsed.meta_title || parsed.socials?.meta_title || '',
+          meta_description: parsed.meta_description || parsed.socials?.meta_description || '',
           socials: migrateSocials(parsed.socials)
         };
         const pTheme = parsed.active_theme || parsed.activeTheme;
@@ -166,6 +170,8 @@ onMounted(async () => {
           title: profileDataDb.title || 'Creative Technologist',
           bio: profileDataDb.bio,
           avatar: profileDataDb.avatar_url,
+          meta_title: profileDataDb.socials?.meta_title || '',
+          meta_description: profileDataDb.socials?.meta_description || '',
           socials: migrateSocials(profileDataDb.socials),
         };
         profile.value = mappedProfile;
