@@ -15,7 +15,7 @@ const currentYear = new Date().getFullYear();
         isRetro ? 'font-mono text-black font-bold' : 'font-sans text-[var(--text-body)]'
       ]"
     >
-      &copy; {{ currentYear }} Muffyn &bull; Personal Linktree
+      &copy; {{ currentYear }} RAFIESTER &bull; PERSONAL SPACE
     </p>
   </footer>
 </template>
