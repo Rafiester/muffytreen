@@ -14,18 +14,14 @@ interface LinkItem {
 interface LinkEditorItemProps {
   link: LinkItem;
   idx: number;
-  totalLinks: number;
   onLinkChange: <K extends keyof LinkItem>(index: number, key: K, value: LinkItem[K]) => void;
-  onMoveLink: (index: number, direction: 'up' | 'down') => void;
   onDeleteLink: (index: number) => void;
 }
 
 export default function LinkEditorItem({
   link,
   idx,
-  totalLinks,
   onLinkChange,
-  onMoveLink,
   onDeleteLink
 }: LinkEditorItemProps) {
   return (
@@ -45,27 +41,16 @@ export default function LinkEditorItem({
         
         {/* Sorting, Active state, and Delete buttons */}
         <div className="flex items-center gap-1.5">
-          {/* Sort buttons */}
-          <button
-            onClick={() => onMoveLink(idx, 'up')}
-            disabled={idx === 0}
-            className="p-1 hover:bg-white/[0.04] rounded-lg text-white/30 hover:text-white disabled:opacity-20 transition-colors"
-            title="Move Up"
+          {/* Reorder drag handle indicator */}
+          <div 
+            className="flex items-center gap-1 px-2 py-1 bg-white/[0.03] border border-white/[0.06] rounded-lg text-white/30 cursor-grab active:cursor-grabbing hover:text-white/60 transition-colors"
+            title="Drag card to reorder"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
             </svg>
-          </button>
-          <button
-            onClick={() => onMoveLink(idx, 'down')}
-            disabled={idx === totalLinks - 1}
-            className="p-1 hover:bg-white/[0.04] rounded-lg text-white/30 hover:text-white disabled:opacity-20 transition-colors"
-            title="Move Down"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-            </svg>
-          </button>
+            <span className="text-[9px] font-bold uppercase tracking-wider select-none">Reorder</span>
+          </div>
           
           {/* Active toggle */}
           <button

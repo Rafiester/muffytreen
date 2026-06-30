@@ -255,20 +255,7 @@ export default function AdminDashboard() {
     setLinks(prev => [...prev, newLink]);
   };
 
-  // Reorder/move link in array
-  const moveLink = (index: number, direction: 'up' | 'down') => {
-    if (direction === 'up' && index === 0) return;
-    if (direction === 'down' && index === links.length - 1) return;
 
-    const targetIdx = direction === 'up' ? index - 1 : index + 1;
-    setLinks(prev => {
-      const updated = [...prev];
-      const temp = updated[index];
-      updated[index] = updated[targetIdx];
-      updated[targetIdx] = temp;
-      return updated;
-    });
-  };
 
   // Delete a link from array
   const deleteLink = (index: number) => {
@@ -456,8 +443,8 @@ export default function AdminDashboard() {
                 links={links}
                 onAddLink={addLink}
                 onLinkChange={handleLinkChange}
-                onMoveLink={moveLink}
                 onDeleteLink={deleteLink}
+                onReorderAll={setLinks}
               />
             </div>
           )}

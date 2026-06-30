@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LinkEditorItem from './LinkEditorItem';
 
 interface LinkItem {
@@ -16,17 +16,56 @@ interface LinksManagerProps {
   links: LinkItem[];
   onAddLink: () => void;
   onLinkChange: <K extends keyof LinkItem>(index: number, key: K, value: LinkItem[K]) => void;
-  onMoveLink: (index: number, direction: 'up' | 'down') => void;
   onDeleteLink: (index: number) => void;
+  onReorderAll?: (reorderedLinks: LinkItem[]) => void;
 }
 
 export default function LinksManager({
   links,
   onAddLink,
   onLinkChange,
-  onMoveLink,
-  onDeleteLink
+  onDeleteLink,
+  onReorderAll
 }: LinksManagerProps) {
+  // Drag and drop sorting states
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIdx(index);
+    // Standard dataTransfer setup for HTML5 drag
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', index.toString());
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIdx === null || draggedIdx === index) return;
+    setDragOverIdx(index);
+  };
+
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedIdx === null || draggedIdx === targetIndex) {
+      cleanupDrag();
+      return;
+    }
+
+    const reordered = [...links];
+    const [draggedItem] = reordered.splice(draggedIdx, 1);
+    reordered.splice(targetIndex, 0, draggedItem);
+
+    if (onReorderAll) {
+      onReorderAll(reordered);
+    }
+    cleanupDrag();
+  };
+
+  const cleanupDrag = () => {
+    setDraggedIdx(null);
+    setDragOverIdx(null);
+  };
+
   return (
     <div className="bg-[#1e1d23]/80 border border-white/[0.04] p-6 rounded-2xl backdrop-blur-sm">
       <div className="flex items-center justify-between mb-6">
@@ -50,17 +89,33 @@ export default function LinksManager({
         </div>
       ) : (
         <div className="space-y-4">
-          {links.map((link, idx) => (
-            <LinkEditorItem
-              key={link.id}
-              link={link}
-              idx={idx}
-              totalLinks={links.length}
-              onLinkChange={onLinkChange}
-              onMoveLink={onMoveLink}
-              onDeleteLink={onDeleteLink}
-            />
-          ))}
+          {links.map((link, idx) => {
+            const isDragging = draggedIdx === idx;
+            const isDragOver = dragOverIdx === idx;
+
+            return (
+              <div
+                key={link.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e, idx)}
+                onDragOver={(e) => handleDragOver(e, idx)}
+                onDrop={(e) => handleDrop(e, idx)}
+                onDragEnd={cleanupDrag}
+                className={`transition-all duration-200 ${
+                  isDragging ? 'opacity-30 scale-[0.98]' : 'opacity-100'
+                } ${
+                  isDragOver ? 'border-t-2 border-[#af413c]/60 pt-4' : ''
+                }`}
+              >
+                <LinkEditorItem
+                  link={link}
+                  idx={idx}
+                  onLinkChange={onLinkChange}
+                  onDeleteLink={onDeleteLink}
+                />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
