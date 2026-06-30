@@ -70,13 +70,11 @@ export default function LinkEditorItem({
           {/* Delete link */}
           <button
             onClick={() => onDeleteLink(idx)}
-            className="p-1 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 text-white/30 hover:text-rose-400 rounded-lg transition-all ml-1"
+            className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-md border bg-rose-500/10 border-rose-500/20 hover:bg-rose-500/20 text-rose-400 transition-all"
             title="Delete Link"
             disabled={isDragActive}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.34 9m-4.72 0-.34-9m9.96-3.243a3.003 3.003 0 0 0-3-2.731H12h-1.682a3.003 3.003 0 0 0-3 2.731M19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H8.25A2.25 2.25 0 0 1 6 18.75V14m12-6.875h-12" />
-            </svg>
+            Delete
           </button>
         </div>
       </div>
