@@ -64,7 +64,7 @@ export default function LinkEditorItem({
             }`}
             disabled={isDragActive}
           >
-            {(link.is_active ?? true) ? 'Active' : 'Hidden'}
+            {(link.is_active ?? true) ? 'Published' : 'Hidden'}
           </button>
 
           {/* Delete link */}
