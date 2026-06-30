@@ -33,7 +33,7 @@ export default function DashboardHeader({ saving, onSave, onLogout, onMenuToggle
               </svg>
             </div>
             <div className="leading-none">
-              <h1 className="text-[13px] font-semibold text-white/85 tracking-tight">Muffytreen CMS</h1>
+              <h1 className="text-sm font-semibold text-white/85 tracking-tight">Muffytreen CMS</h1>
             </div>
           </div>
         </div>
@@ -42,7 +42,7 @@ export default function DashboardHeader({ saving, onSave, onLogout, onMenuToggle
         <div className="flex items-center gap-2">
           <button
             onClick={() => window.open('/', '_blank')}
-            className="h-8 px-3 rounded-lg text-[11px] font-medium text-white/45 hover:text-white/75 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] transition-all flex items-center gap-1.5"
+            className="h-8 px-3 rounded-lg text-xs font-medium text-white/45 hover:text-white/75 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] transition-all flex items-center gap-1.5"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -53,7 +53,7 @@ export default function DashboardHeader({ saving, onSave, onLogout, onMenuToggle
           <button
             onClick={onSave}
             disabled={saving}
-            className="h-8 px-4 rounded-lg text-[11px] font-semibold text-white bg-gradient-to-r from-[#c94a44] to-[#af413c] hover:from-[#d4534d] hover:to-[#b84842] disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-md shadow-[#af413c]/20"
+            className="h-8 px-4 rounded-lg text-xs font-semibold text-white bg-gradient-to-r from-[#c94a44] to-[#af413c] hover:from-[#d4534d] hover:to-[#b84842] disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-md shadow-[#af413c]/20"
           >
             {saving ? (
               <>

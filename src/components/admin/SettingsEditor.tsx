@@ -16,14 +16,14 @@ interface SettingsEditorProps {
 export default function SettingsEditor({ settings, onChange }: SettingsEditorProps) {
   return (
     <div className="bg-white/[0.02] border border-white/[0.04] p-6 rounded-2xl backdrop-blur-sm">
-      <h2 className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/30 mb-6 flex items-center gap-2">
+      <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-white/30 mb-6 flex items-center gap-2">
         <span className="w-1.5 h-1.5 rounded-full bg-[#af413c]" />
         Experience Settings & SEO
       </h2>
 
       <div className="space-y-5">
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="experience-theme">Active Experience Theme</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="experience-theme">Active Experience Theme</label>
           <select
             id="experience-theme"
             value={settings.active_theme}
@@ -37,7 +37,7 @@ export default function SettingsEditor({ settings, onChange }: SettingsEditorPro
         </div>
 
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="meta-title">SEO Meta Title</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="meta-title">SEO Meta Title</label>
           <input
             id="meta-title"
             type="text"
@@ -49,7 +49,7 @@ export default function SettingsEditor({ settings, onChange }: SettingsEditorPro
         </div>
 
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="meta-description">SEO Meta Description</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="meta-description">SEO Meta Description</label>
           <textarea
             id="meta-description"
             value={settings.meta_description || ''}

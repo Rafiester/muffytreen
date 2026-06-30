@@ -24,14 +24,14 @@ interface ProfileEditorProps {
 export default function ProfileEditor({ profile, onChange }: ProfileEditorProps) {
   return (
     <div className="bg-[#1e1d23]/80 border border-white/[0.04] p-6 rounded-2xl backdrop-blur-sm">
-      <h2 className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/30 mb-6 flex items-center gap-2">
+      <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-white/30 mb-6 flex items-center gap-2">
         <span className="w-1.5 h-1.5 rounded-full bg-[#af413c]" />
         Profile Details
       </h2>
 
       <div className="space-y-5">
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="display-name">Display Name</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="display-name">Display Name</label>
           <input
             id="display-name"
             type="text"
@@ -43,7 +43,7 @@ export default function ProfileEditor({ profile, onChange }: ProfileEditorProps)
         </div>
 
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="profession-title">Title / Profession</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="profession-title">Title / Profession</label>
           <input
             id="profession-title"
             type="text"
@@ -55,7 +55,7 @@ export default function ProfileEditor({ profile, onChange }: ProfileEditorProps)
         </div>
 
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="bio-description">Bio / Description</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="bio-description">Bio / Description</label>
           <textarea
             id="bio-description"
             value={profile.bio}
@@ -67,13 +67,13 @@ export default function ProfileEditor({ profile, onChange }: ProfileEditorProps)
         </div>
 
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="avatar-url">Avatar Image URL</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="avatar-url">Avatar Image URL</label>
           <input
             id="avatar-url"
             type="text"
             value={profile.avatar}
             onChange={(e) => onChange('avatar', e.target.value)}
-            className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-xs transition-all"
+            className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
             placeholder="https://images.unsplash.com/..."
           />
         </div>

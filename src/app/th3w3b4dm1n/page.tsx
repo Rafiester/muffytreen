@@ -447,7 +447,7 @@ export default function AdminDashboard() {
           {/* Active Title Block */}
           <div className="mb-6">
             <h2 className="text-2xl font-black text-white tracking-tight">{getTabLabel()}</h2>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-sm text-slate-400 mt-1">
               {activeTab === 'dashboard' ? 'Welcome to the administration panel.' : `Configure your ${getTabLabel()} content.`}
             </p>
             <div className="border-b border-slate-900/60 my-5" />

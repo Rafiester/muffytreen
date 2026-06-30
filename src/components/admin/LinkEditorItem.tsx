@@ -100,28 +100,28 @@ export default function LinkEditorItem({
             type="text"
             value={link.description}
             onChange={(e) => onLinkChange(idx, 'description', e.target.value)}
-            className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-xs transition-all"
+            className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
             placeholder="Subtitle text"
           />
         </div>
 
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wide text-white/20 mb-1">Destination URL</label>
+          <label className="block text-xs font-bold uppercase tracking-wide text-white/20 mb-1">Destination URL</label>
           <input
             type="text"
             value={link.url}
             onChange={(e) => onLinkChange(idx, 'url', e.target.value)}
-            className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-xs transition-all"
+            className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
             placeholder="https://..."
           />
         </div>
 
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wide text-white/20 mb-1">Icon Category</label>
+          <label className="block text-xs font-bold uppercase tracking-wide text-white/20 mb-1">Icon Category</label>
           <select
             value={link.icon}
             onChange={(e) => onLinkChange(idx, 'icon', e.target.value)}
-            className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-xs transition-all"
+            className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
           >
             <option value="globe">Globe (Website)</option>
             <option value="youtube">YouTube</option>
@@ -133,17 +133,17 @@ export default function LinkEditorItem({
 
         <div className="grid grid-cols-3 gap-2">
           <div className="col-span-2">
-            <label className="block text-[10px] font-bold uppercase tracking-wide text-white/20 mb-1">Accent HEX Color</label>
+            <label className="block text-xs font-bold uppercase tracking-wide text-white/20 mb-1">Accent HEX Color</label>
             <input
               type="text"
               value={link.accentColor || ''}
               onChange={(e) => onLinkChange(idx, 'accentColor', e.target.value)}
-              className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-xs transition-all"
+              className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
               placeholder="#6366f1"
             />
           </div>
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wide text-white/20 mb-1 text-center">Featured</label>
+            <label className="block text-xs font-bold uppercase tracking-wide text-white/20 mb-1 text-center">Featured</label>
             <div className="flex justify-center pt-2">
               <input
                 type="checkbox"

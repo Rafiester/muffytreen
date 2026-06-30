@@ -83,8 +83,8 @@ export default function Sidebar({
                 </svg>
               </div>
               <div className="leading-none">
-                <div className="text-[11px] font-bold text-white/90 tracking-wide">Muffytreen</div>
-                <div className="text-[9px] text-white/30 font-medium tracking-wider uppercase mt-0.5">CMS Panel</div>
+                <div className="text-[14px] font-bold text-white/90 tracking-wide">Muffytreen</div>
+                <div className="text-[11px] text-white/30 font-medium tracking-wider uppercase mt-0.5">CMS Panel</div>
               </div>
             </div>
             <button 
@@ -104,7 +104,7 @@ export default function Sidebar({
           {/* Navigation */}
           <nav className="px-3 space-y-0.5">
             <div className="px-2 pb-2">
-              <span className="text-[9px] font-bold text-white/20 uppercase tracking-[0.15em]">Navigation</span>
+              <span className="text-[11px] font-bold text-white/20 uppercase tracking-[0.15em]">Navigation</span>
             </div>
             {menuItems.map((item) => {
               const isActive = activeTab === item.id;
@@ -113,7 +113,7 @@ export default function Sidebar({
                   key={item.id}
                   onClick={() => onTabSelect(item.id)}
                   className={`
-                    group w-full flex items-center gap-3 px-3 py-[9px] rounded-lg text-left text-[12px] font-medium transition-all duration-150
+                    group w-full flex items-center gap-3 px-3 py-[9px] rounded-lg text-left text-[14px] font-medium transition-all duration-150
                     ${isActive 
                       ? 'bg-[#af413c]/12 text-[#e8736e]' 
                       : 'text-white/45 hover:text-white/75 hover:bg-white/[0.04]'
@@ -135,13 +135,13 @@ export default function Sidebar({
 
             {/* Settings separator */}
             <div className="pt-3 pb-2 px-2">
-              <span className="text-[9px] font-bold text-white/20 uppercase tracking-[0.15em]">System</span>
+              <span className="text-[11px] font-bold text-white/20 uppercase tracking-[0.15em]">System</span>
             </div>
 
             <button
               onClick={() => onTabSelect('settings')}
               className={`
-                group w-full flex items-center gap-3 px-3 py-[9px] rounded-lg text-left text-[12px] font-medium transition-all duration-150
+                group w-full flex items-center gap-3 px-3 py-[9px] rounded-lg text-left text-[14px] font-medium transition-all duration-150
                 ${activeTab === 'settings'
                   ? 'bg-[#af413c]/12 text-[#e8736e]' 
                   : 'text-white/45 hover:text-white/75 hover:bg-white/[0.04]'
@@ -165,12 +165,12 @@ export default function Sidebar({
         {/* Bottom Profile Block — Fluent acrylic card */}
         <div className="m-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.04] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c94a44] to-[#8b2e2a] flex items-center justify-center font-bold text-white text-[11px] select-none shadow-md shadow-[#af413c]/15">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c94a44] to-[#8b2e2a] flex items-center justify-center font-bold text-white text-xs select-none shadow-md shadow-[#af413c]/15">
               A
             </div>
             <div>
-              <div className="text-[11px] font-semibold text-white/80 leading-tight">Administrator</div>
-              <div className="text-[9px] text-white/25 font-medium">Super User</div>
+              <div className="text-xs font-semibold text-white/80 leading-tight">Administrator</div>
+              <div className="text-[11px] text-white/25 font-medium">Super User</div>
             </div>
           </div>
           <button 
