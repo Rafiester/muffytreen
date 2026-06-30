@@ -3,11 +3,7 @@
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
       <!-- Left: Brand -->
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="leading-none">
-            <h1>CMS</h1>
-          </div>
-        </div>
+        <div className="flex items-center gap-2.5" />
       </div>
 
       <!-- Right Section is now empty -->
