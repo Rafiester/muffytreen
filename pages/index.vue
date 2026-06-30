@@ -59,6 +59,12 @@ const themeColors: Record<Theme, string> = {
 };
 
 useHead({
+  htmlAttrs: {
+    style: computed(() => `background-color: ${themeColors[theme.value] || '#ffffff'} !important;`)
+  },
+  bodyAttrs: {
+    style: computed(() => `background-color: ${themeColors[theme.value] || '#ffffff'} !important;`)
+  },
   meta: [
     {
       name: 'theme-color',
