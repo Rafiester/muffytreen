@@ -7,7 +7,7 @@ import ProfileHeader from '../components/profile/ProfileHeader.vue';
 import ProfileFooter from '../components/profile/ProfileFooter.vue';
 import { supabase, hasSupabaseConfig } from '../lib/supabase';
 
-type Theme = 'minimalist' | 'minimalist-dark' | 'retro';
+type Theme = 'minimalist' | 'minimalist-dark' | 'retro' | 'electric';
 
 interface Profile {
   name: string;
@@ -56,7 +56,7 @@ const handleThemeChange = (newTheme: Theme) => {
 };
 
 onMounted(async () => {
-  const allowedThemes: Theme[] = ['minimalist', 'minimalist-dark', 'retro'];
+  const allowedThemes: Theme[] = ['minimalist', 'minimalist-dark', 'retro', 'electric'];
 
   async function loadData() {
     if (!hasSupabaseConfig || !supabase) {
@@ -170,24 +170,16 @@ onMounted(async () => {
   </div>
   
   <div v-else :class="['min-h-screen w-full relative flex flex-col items-center justify-between pb-12 pt-6 transition-all duration-300', isRetro ? 'retro-grid' : '']">
-    <!-- Top Floating Theme Switcher & Status Indicator -->
-    <header class="w-full max-w-xl px-4 flex justify-between items-center mb-8 relative z-50">
-      <div class="flex items-center gap-1.5">
-        <span :class="['w-2 h-2 rounded-full', hasSupabaseConfig && !error ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500']" />
-        <span :class="['text-[9px] uppercase font-bold tracking-wider select-none', isRetro ? 'font-mono text-black font-black bg-white px-2 py-0.5 border-[2px] border-black' : 'text-[var(--text-body)] opacity-70']">
-          {{ hasSupabaseConfig && !error ? 'Supabase Live' : 'Mock CMS Mode' }}
-        </span>
-      </div>
-      <ThemeToggle :currentTheme="theme" @theme-change="handleThemeChange" />
-    </header>
+    <!-- Floating Theme Switcher (bottom-right FAB) -->
+    <ThemeToggle :currentTheme="theme" @theme-change="handleThemeChange" />
 
     <!-- Main Link-in-Bio Container -->
     <main class="w-full max-w-xl px-4 flex-1 flex flex-col items-center">
       <!-- Dynamic Profile Header -->
-      <ProfileHeader v-if="profile" :profile="profile" :isRetro="isRetro" />
+      <ProfileHeader v-if="profile" :profile="profile" :theme="theme" />
 
       <!-- Dynamic Link List -->
-      <section class="w-full flex flex-col gap-4 mb-12">
+      <section :class="['w-full flex flex-col mb-12', theme === 'electric' ? 'gap-0 electric-list' : 'gap-4']">
         <LinkCard v-for="link in links" :key="link.id" :link="link" :theme="theme" />
       </section>
     </main>
@@ -196,3 +188,12 @@ onMounted(async () => {
     <ProfileFooter v-if="profile" :name="profile.name" :isRetro="isRetro" />
   </div>
 </template>
+
+<style scoped>
+.electric-list {
+  margin-top: -104px; /* Collapse spacing between ProfileHeader bottom bleed and first card top bleed */
+}
+.electric-list > * + * {
+  margin-top: -104px; /* Collapse spacing between adjacent electric cards */
+}
+</style>

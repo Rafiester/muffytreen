@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import AvatarUploader from './AvatarUploader.vue';
+
 type Theme = 'minimalist' | 'minimalist-dark' | 'retro';
 
 interface Profile {
@@ -23,23 +26,38 @@ const emit = defineEmits<{
   (e: 'change', key: keyof Profile, value: any): void;
 }>();
 
+const selectedFile = ref<File | null>(null);
+const showCropper = ref(false);
+
 const handleFileInput = (e: Event) => {
   const target = e.target as HTMLInputElement;
   const file = target.files?.[0];
   if (!file) return;
 
-  if (file.size > 204800) {
-    alert("File is too large! Maximum allowed size is 200KB.");
+  // Validation: PNG/JPG support only
+  const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+  if (!validTypes.includes(file.type)) {
+    alert("Invalid format! Only PNG and JPG/JPEG files are supported.");
+    target.value = '';
     return;
   }
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    if (typeof reader.result === 'string') {
-      emit('change', 'avatar', reader.result);
-    }
-  };
-  reader.readAsDataURL(file);
+  // Validation: Max limit 1MB
+  const maxLimit = 1 * 1024 * 1024; // 1MB
+  if (file.size > maxLimit) {
+    alert("File is too large! Maximum allowed size is 1MB.");
+    target.value = '';
+    return;
+  }
+
+  selectedFile.value = file;
+  showCropper.value = true;
+  target.value = ''; // Reset input to allow selecting same file again
+};
+
+const handleCropSuccess = (base64: string) => {
+  emit('change', 'avatar', base64);
+  showCropper.value = false;
 };
 </script>
 
@@ -84,7 +102,7 @@ const handleFileInput = (e: Event) => {
               </button>
             </div>
             <span class="text-[10px] text-white/20 block">
-              Max size: 200KB. Square ratio (PNG/JPG/SVG) recommended. Only file uploads accepted.
+              Max size: 1MB. PNG/JPG formats supported. Crop size: 1024x1024.
             </span>
           </div>
         </div>
@@ -126,5 +144,13 @@ const handleFileInput = (e: Event) => {
         />
       </div>
     </div>
+
+    <!-- Interactive Canvas Cropper Modal -->
+    <AvatarUploader 
+      v-if="showCropper" 
+      :file="selectedFile!" 
+      @crop="handleCropSuccess" 
+      @close="showCropper = false" 
+    />
   </div>
 </template>

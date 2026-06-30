@@ -1,58 +1,3 @@
-## Integrate the <ElectricBorder /> component from Vue Bits
-
-You are helping integrate an open-source Vue component into an existing application.
-
-### Component: ElectricBorder
-### Variant: TypeScript + Tailwind
-
-
----
-
-### Usage Example
-```vue
-// CREDIT
-// Component inspired by @BalintFerenczy on X
-// https://codepen.io/BalintFerenczy/pen/KwdoyEN
-
-<template>
-  <ElectricBorder
-    color="#7df9ff"
-    :speed="1"
-    :chaos="0.5"
-    :thickness="2"
-    :style="{ borderRadius: '16px' }"
-  >
-    <div>
-      <p
-        style="
-          margin: 6px 0 0;
-          opacity: 0.8;
-        "
-      >
-        A glowing, animated border wrapper.
-      </p>
-    </div>
-  </ElectricBorder>
-</template>
-
-<script setup lang="ts">
-import ElectricBorder from './ElectricBorder.vue'
-</script>
-```
-
-### Props
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| color | string | "#28FF85" | Stroke/glow color. Any CSS color (hex, rgb, hsl). |
-| speed | number | 1 | Animation speed multiplier (higher = faster). |
-| chaos | number | 0.12 | Distortion intensity (0 = no distortion, higher = more chaotic). |
-| borderRadius | number | 24 | Border radius in pixels for the electric border path. |
-| className | string | — | Optional className applied to the root wrapper. |
-| style | CSSProperties | — | Inline styles for the wrapper. |
-| children | slot | — | Content rendered inside the bordered container. |
-
-### Full Component Source
-```vue
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type CSSProperties } from 'vue';
 
@@ -451,9 +396,3 @@ const wrapperStyle = computed<CSSProperties>(() => ({
     </div>
   </div>
 </template>
-```
-
-### Integration Instructions
-1. Copy the component source into the appropriate directory in the project.
-2. Import and render the component using the usage example above as a starting point.
-3. Adjust props as needed for the specific use case.
