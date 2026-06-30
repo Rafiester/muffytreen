@@ -14,6 +14,11 @@ import DeleteModal from '../../admin/DeleteModal/index.vue';
 type Theme = 'clean-light' | 'pitch-dark' | 'retro' | 'fluent' | 'solarized';
 type TabType = 'dashboard' | 'home' | 'about' | 'settings';
 
+interface SocialCard {
+  url: string;
+  icon: string;
+}
+
 interface Profile {
   name: string;
   title: string;
@@ -22,15 +27,8 @@ interface Profile {
   active_theme: Theme;
   meta_title?: string;
   meta_description?: string;
-  socials: {
-    github: string;
-    twitter: string;
-    linkedin: string;
-    email: string;
-    meta_title?: string;
-    meta_description?: string;
-    electricAccentColor?: string;
-  };
+  electricAccentColor?: string;
+  socials: Record<string, SocialCard | string> | any;
 }
 
 interface LinkItem {
@@ -76,6 +74,21 @@ useHead({
 // Tab State
 const activeTab = ref<TabType>('dashboard');
 
+const migrateSocials = (rawSocials: any) => {
+  if (!rawSocials) return profileData.profile.socials;
+  if (rawSocials.card1 || rawSocials.card2 || typeof rawSocials.github === 'undefined') {
+    return rawSocials;
+  }
+  return {
+    card1: { url: rawSocials.github || '', icon: 'github' },
+    card2: { url: rawSocials.twitter || '', icon: 'twitter' },
+    card3: { url: rawSocials.linkedin || '', icon: 'linkedin' },
+    card4: { url: rawSocials.email || '', icon: 'email' },
+    meta_title: rawSocials.meta_title,
+    meta_description: rawSocials.meta_description
+  };
+};
+
 // Profile State
 const profile = ref<Profile>({
   name: '',
@@ -85,7 +98,8 @@ const profile = ref<Profile>({
   active_theme: 'clean-light',
   meta_title: '',
   meta_description: '',
-  socials: { github: '', twitter: '', linkedin: '', email: '' }
+  electricAccentColor: '',
+  socials: migrateSocials(null)
 });
 
 // Links State
@@ -128,7 +142,7 @@ onMounted(() => {
           meta_title: parsed.meta_title || '',
           meta_description: parsed.meta_description || '',
           electricAccentColor: parsed.electricAccentColor || undefined,
-          socials: parsed.socials || { github: '', twitter: '', linkedin: '', email: '' }
+          socials: migrateSocials(parsed.socials)
         };
       } else {
         profile.value = {
@@ -137,7 +151,7 @@ onMounted(() => {
           meta_title: '',
           meta_description: '',
           electricAccentColor: profileData.settings?.electricAccentColor || undefined,
-          socials: profileData.profile.socials || { github: '', twitter: '', linkedin: '', email: '' }
+          socials: migrateSocials(profileData.profile.socials)
         } as Profile;
       }
 
@@ -171,12 +185,7 @@ onMounted(() => {
           meta_title: rawSocials.meta_title || '',
           meta_description: rawSocials.meta_description || '',
           electricAccentColor: dbProfile.electric_accent_color || profileData.settings?.electricAccentColor || undefined,
-          socials: {
-            github: rawSocials.github || '',
-            twitter: rawSocials.twitter || '',
-            linkedin: rawSocials.linkedin || '',
-            email: rawSocials.email || ''
-          }
+          socials: migrateSocials(rawSocials)
         };
 
         const { data: dbLinks, error: linksErr } = await supabase
@@ -208,7 +217,7 @@ onMounted(() => {
         meta_title: '',
         meta_description: '',
         electricAccentColor: profileData.settings?.electricAccentColor || undefined,
-        socials: profileData.profile.socials || { github: '', twitter: '', linkedin: '', email: '' }
+        socials: migrateSocials(profileData.profile.socials)
       } as Profile;
       links.value = profileData.links.map(l => ({ ...l, is_active: true }));
     } finally {
@@ -240,7 +249,7 @@ const handleSettingsChange = (
 };
 
 // Handle updates to socials
-const handleSocialChange = (key: keyof Profile['socials'], value: string) => {
+const handleSocialChange = (key: string, value: any) => {
   profile.value = {
     ...profile.value,
     socials: {

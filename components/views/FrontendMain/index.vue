@@ -9,12 +9,17 @@ import { supabase, hasSupabaseConfig } from '../../../lib/supabase';
 
 type Theme = 'clean-light' | 'pitch-dark' | 'retro' | 'fluent' | 'solarized' | 'electric';
 
+interface SocialCard {
+  url: string;
+  icon: string;
+}
+
 interface Profile {
   name: string;
   title: string;
   bio: string;
   avatar: string;
-  socials: Record<string, string>;
+  socials: Record<string, SocialCard | string>;
 }
 
 interface LinkItem {
@@ -70,19 +75,56 @@ const handleThemeChange = (newTheme: Theme) => {
   document.documentElement.setAttribute('data-theme', newTheme);
 };
 
+const migrateSocials = (rawSocials: any) => {
+  if (!rawSocials) return profileData.profile.socials;
+  if (rawSocials.card1 || rawSocials.card2 || typeof rawSocials.github === 'undefined') {
+    return rawSocials;
+  }
+  // Migrate old flat structure
+  return {
+    card1: { url: rawSocials.github || '', icon: 'github' },
+    card2: { url: rawSocials.twitter || '', icon: 'twitter' },
+    card3: { url: rawSocials.linkedin || '', icon: 'linkedin' },
+    card4: { url: rawSocials.email || '', icon: 'email' },
+    meta_title: rawSocials.meta_title,
+    meta_description: rawSocials.meta_description
+  };
+};
+
 onMounted(async () => {
   const allowedThemes: Theme[] = ['clean-light', 'pitch-dark', 'retro', 'fluent', 'solarized', 'electric'];
 
+  // 1. Read from localStorage if running outside of CMS context but want to preview
+  const savedTheme = localStorage.getItem('user-theme') as Theme;
+  if (savedTheme && allowedThemes.includes(savedTheme)) {
+    theme.value = savedTheme;
+  }
+
   async function loadData() {
     if (!hasSupabaseConfig || !supabase) {
-      console.log("Supabase credentials not configured. Using local/localStorage mock data.");
+      console.log("Supabase credentials not configured. Loading editable local state.");
       const localProfile = localStorage.getItem('cms-profile');
       const localLinks = localStorage.getItem('cms-links');
-      
-      const loadedProfile = localProfile ? JSON.parse(localProfile) : profileData.profile;
-      profile.value = loadedProfile;
-      links.value = localLinks ? JSON.parse(localLinks) : profileData.links;
-      
+
+      if (localProfile) {
+        const parsed = JSON.parse(localProfile);
+        profile.value = {
+          name: parsed.name || '',
+          title: parsed.title || '',
+          bio: parsed.bio || '',
+          avatar: parsed.avatar || '',
+          socials: migrateSocials(parsed.socials)
+        };
+        const pTheme = parsed.active_theme || parsed.activeTheme;
+        if (pTheme && allowedThemes.includes(pTheme)) theme.value = pTheme;
+      } else {
+        profile.value = {
+          ...profileData.profile,
+          socials: profileData.profile.socials
+        } as Profile;
+        if (profileData.settings?.activeTheme) theme.value = profileData.settings.activeTheme as Theme;
+      }
+
       const localSettings = localStorage.getItem('cms-settings');
       if (localSettings) {
         const parsedSettings = JSON.parse(localSettings);
@@ -93,7 +135,6 @@ onMounted(async () => {
         electricAccentColor.value = profileData.settings.electricAccentColor;
       }
       
-      const activeTheme = loadedProfile.active_theme || loadedProfile.activeTheme;
       const savedTheme = localStorage.getItem('user-theme') as Theme;
       const initialTheme = (savedTheme && allowedThemes.includes(savedTheme))
         ? savedTheme
@@ -125,7 +166,7 @@ onMounted(async () => {
           title: profileDataDb.title || 'Creative Technologist',
           bio: profileDataDb.bio,
           avatar: profileDataDb.avatar_url,
-          socials: profileDataDb.socials || profileData.profile.socials,
+          socials: migrateSocials(profileDataDb.socials),
         };
         profile.value = mappedProfile;
 

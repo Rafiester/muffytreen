@@ -5,10 +5,10 @@
     "bio": "Building aesthetic, high-performance web applications. Focused on creative frontend engineering and micro-interactions.",
     "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&h=300&q=80",
     "socials": {
-      "github": "https://github.com",
-      "twitter": "https://twitter.com",
-      "linkedin": "https://linkedin.com",
-      "email": "mailto:alex@example.com"
+      "card1": { "url": "https://github.com", "icon": "github" },
+      "card2": { "url": "https://twitter.com", "icon": "twitter" },
+      "card3": { "url": "https://linkedin.com", "icon": "linkedin" },
+      "card4": { "url": "mailto:alex@example.com", "icon": "email" }
     }
   },
   "settings": {
