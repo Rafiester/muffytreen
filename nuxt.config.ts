@@ -7,6 +7,5 @@ export default defineNuxtConfig({
       '@tailwindcss/postcss': {},
     },
   },
-  compatibilityDate: '2024-04-03',
-  ssr: false // Single Page Application mode for local Supabase/localStorage workflows
+  compatibilityDate: '2024-04-03'
 })
