@@ -442,7 +442,7 @@ export default function AdminDashboard() {
         <main className="max-w-full w-full mx-auto px-6 py-10 flex-1 flex flex-col justify-start">
           
           {/* Active Title Block */}
-          <div className="mb-6">
+          <div className="mb-2">
             <h2 className="text-2xl font-black !text-white tracking-tight">
               {activeTab === 'dashboard' && 'Dashboard'}
               {activeTab === 'about' && 'About me'}
@@ -455,7 +455,7 @@ export default function AdminDashboard() {
               {activeTab === 'home' && 'Configure your Items content.'}
               {activeTab === 'settings' && 'Configure your Settings content.'}
             </p>
-            <div className="border-b border-slate-900/60 my-5" />
+            <div className="border-b border-slate-900/60 my-3" />
           </div>
 
           {/* Tab Panels */}
