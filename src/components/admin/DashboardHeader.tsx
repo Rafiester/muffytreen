@@ -13,14 +13,6 @@ export default function DashboardHeader({ saving, onSave, onLogout }: DashboardH
         {/* Left: Brand */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-gradient-to-br from-[#c94a44] to-[#8b2e2a] rounded-lg flex items-center justify-center shadow-sm shadow-[#af413c]/20">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-white">
-                <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                <rect x="3" y="14" width="7" height="7" rx="1.5" />
-                <rect x="14" y="14" width="7" height="7" rx="1.5" />
-              </svg>
-            </div>
             <div className="leading-none">
               <h1 className="text-sm font-semibold text-white/85 tracking-tight">Muffytreen CMS</h1>
             </div>
