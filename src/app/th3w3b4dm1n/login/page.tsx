@@ -121,9 +121,21 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        {/* Note info */}
-        <div className="mt-8 pt-6 border-t border-white/[0.04] text-center text-[10px] text-white/30">
-          Tip: Use <code className="text-[#e8736e] bg-[#af413c]/10 px-1.5 py-0.5 rounded">admin</code> / <code className="text-[#e8736e] bg-[#af413c]/10 px-1.5 py-0.5 rounded">admin</code> for testing
+        {/* Note info with Quick Autofill Button */}
+        <div className="mt-8 pt-6 border-t border-white/[0.04] text-center flex flex-col items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setUsername('admin');
+              setPassword('admin');
+            }}
+            className="px-2.5 py-1 bg-[#af413c]/10 hover:bg-[#af413c]/20 text-[#e8736e] border border-[#af413c]/20 rounded-md text-[10px] font-bold transition-all"
+          >
+            Autofill Credentials
+          </button>
+          <span className="text-[9px] text-white/20">
+            Username: admin / Password: admin
+          </span>
         </div>
       </div>
     </div>
