@@ -77,20 +77,6 @@ export default function ProfileEditor({ profile, onChange }: ProfileEditorProps)
             placeholder="https://images.unsplash.com/..."
           />
         </div>
-
-        <div>
-          <label className="block text-xs font-bold uppercase tracking-wide text-slate-500 mb-2" htmlFor="experience-theme">Active Experience Theme</label>
-          <select
-            id="experience-theme"
-            value={profile.active_theme}
-            onChange={(e) => onChange('active_theme', e.target.value as Theme)}
-            className="w-full px-4 py-2.5 bg-slate-900/60 border border-slate-800 focus:border-indigo-500/80 rounded-xl outline-none text-white text-sm transition-all"
-          >
-            <option value="minimalist">Minimal Light</option>
-            <option value="minimalist-dark">Minimal Dark</option>
-            <option value="retro">90s Retro</option>
-          </select>
-        </div>
       </div>
     </div>
   );

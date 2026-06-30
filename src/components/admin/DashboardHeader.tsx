@@ -4,14 +4,25 @@ interface DashboardHeaderProps {
   saving: boolean;
   onSave: () => void;
   onLogout: () => void;
+  onMenuToggle: () => void;
 }
 
-export default function DashboardHeader({ saving, onSave, onLogout }: DashboardHeaderProps) {
+export default function DashboardHeader({ saving, onSave, onLogout, onMenuToggle }: DashboardHeaderProps) {
   return (
     <header className="border-b border-slate-900 bg-slate-950/40 backdrop-blur-md sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-600/10 border border-indigo-600/20 text-indigo-400 rounded-xl">
+          <button
+            onClick={onMenuToggle}
+            className="p-2 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white rounded-xl transition-all mr-1"
+            title="Toggle Menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+          </button>
+
+          <div className="p-2 bg-indigo-600/10 border border-indigo-600/20 text-indigo-400 rounded-xl hidden sm:block">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
             </svg>

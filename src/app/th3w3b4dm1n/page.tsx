@@ -8,6 +8,8 @@ import DashboardHeader from '../../components/admin/DashboardHeader';
 import ProfileEditor from '../../components/admin/ProfileEditor';
 import SocialsEditor from '../../components/admin/SocialsEditor';
 import LinksManager from '../../components/admin/LinksManager';
+import SettingsEditor from '../../components/admin/SettingsEditor';
+import Sidebar, { TabType } from '../../components/admin/Sidebar';
 
 type Theme = 'minimalist' | 'minimalist-dark' | 'retro';
 
@@ -17,11 +19,15 @@ interface Profile {
   bio: string;
   avatar: string;
   active_theme: Theme;
+  meta_title?: string;
+  meta_description?: string;
   socials: {
     github: string;
     twitter: string;
     linkedin: string;
     email: string;
+    meta_title?: string;
+    meta_description?: string;
   };
 }
 
@@ -54,6 +60,10 @@ export default function AdminDashboard() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
+  // Tab & Drawer State — sidebar starts closed, user toggles it open
+  const [activeTab, setActiveTab] = useState<TabType>('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   // Profile State
   const [profile, setProfile] = useState<Profile>({
     name: '',
@@ -61,6 +71,8 @@ export default function AdminDashboard() {
     bio: '',
     avatar: '',
     active_theme: 'minimalist',
+    meta_title: '',
+    meta_description: '',
     socials: { github: '', twitter: '', linkedin: '', email: '' }
   });
 
@@ -98,12 +110,16 @@ export default function AdminDashboard() {
             bio: parsed.bio || '',
             avatar: parsed.avatar || '',
             active_theme: parsed.active_theme || parsed.activeTheme || 'minimalist',
+            meta_title: parsed.meta_title || '',
+            meta_description: parsed.meta_description || '',
             socials: parsed.socials || { github: '', twitter: '', linkedin: '', email: '' }
           });
         } else {
           setProfile({
             ...profileData.profile,
             active_theme: 'minimalist',
+            meta_title: '',
+            meta_description: '',
             socials: profileData.profile.socials || { github: '', twitter: '', linkedin: '', email: '' }
           });
         }
@@ -121,7 +137,6 @@ export default function AdminDashboard() {
 
       try {
         setLoading(true);
-        // Load active profile
         const { data: dbProfile, error: profileErr } = await supabase
           .from('profiles')
           .select('*')
@@ -132,16 +147,18 @@ export default function AdminDashboard() {
 
         if (dbProfile) {
           setProfileId(dbProfile.id);
+          const socialsObj = dbProfile.socials || {};
           setProfile({
             name: dbProfile.display_name || '',
             title: dbProfile.title || 'Creative Technologist',
             bio: dbProfile.bio || '',
             avatar: dbProfile.avatar_url || '',
             active_theme: (dbProfile.active_theme as Theme) || 'minimalist',
-            socials: dbProfile.socials || { github: '', twitter: '', linkedin: '', email: '' }
+            meta_title: socialsObj.meta_title || '',
+            meta_description: socialsObj.meta_description || '',
+            socials: socialsObj
           });
 
-          // Load links
           const { data: dbLinks, error: linksErr } = await supabase
             .from('links')
             .select('*')
@@ -159,17 +176,18 @@ export default function AdminDashboard() {
               icon: link.icon_name || 'globe',
               featured: link.featured || false,
               accentColor: link.accent_color || undefined,
-              is_active: link.is_active !== false // default true
+              is_active: link.is_active !== false
             })));
           }
         }
       } catch (err: unknown) {
         const errMsg = err instanceof Error ? err.message : String(err);
         showToast(`Failed loading Supabase data: ${errMsg}`, 'error');
-        // Fallback to offline local state
         setProfile({
           ...profileData.profile,
           active_theme: 'minimalist',
+          meta_title: '',
+          meta_description: '',
           socials: profileData.profile.socials || { github: '', twitter: '', linkedin: '', email: '' }
         });
         setLinks(profileData.links.map(l => ({ ...l, is_active: true })));
@@ -187,6 +205,17 @@ export default function AdminDashboard() {
     setProfile(prev => ({
       ...prev,
       [key]: value
+    }));
+  };
+
+  // Handle updates to settings fields (theme & meta)
+  const handleSettingsChange = (
+    key: 'active_theme' | 'meta_title' | 'meta_description',
+    value: string
+  ) => {
+    setProfile(prev => ({
+      ...prev,
+      [key]: value as Theme
     }));
   };
 
@@ -262,7 +291,12 @@ export default function AdminDashboard() {
     try {
       if (!profileId) throw new Error("No active profile ID loaded.");
 
-      // 1. Update the profile row in Supabase
+      const updatedSocials = {
+        ...profile.socials,
+        meta_title: profile.meta_title || null,
+        meta_description: profile.meta_description || null
+      };
+
       const { error: profileUpdateErr } = await supabase
         .from('profiles')
         .update({
@@ -271,14 +305,12 @@ export default function AdminDashboard() {
           bio: profile.bio,
           avatar_url: profile.avatar,
           active_theme: profile.active_theme,
-          socials: profile.socials
+          socials: updatedSocials
         })
         .eq('id', profileId);
 
       if (profileUpdateErr) throw profileUpdateErr;
 
-      // 2. Refresh/Upsert the links
-      // First, fetch current db link ids to find deletions
       const { data: dbLinks, error: fetchErr } = await supabase
         .from('links')
         .select('id')
@@ -290,7 +322,6 @@ export default function AdminDashboard() {
       const remainingIds = links.map(l => l.id).filter(id => !id.startsWith('new-'));
       const deletedIds = currentDbIds.filter(id => !remainingIds.includes(id));
 
-      // Execute Deletions
       if (deletedIds.length > 0) {
         const { error: deleteErr } = await supabase
           .from('links')
@@ -299,7 +330,6 @@ export default function AdminDashboard() {
         if (deleteErr) throw deleteErr;
       }
 
-      // Execute Upserts (Insert new, Update existing)
       const upsertRows = links.map((link, index) => {
         const row: Record<string, unknown> = {
           profile_id: profileId,
@@ -312,7 +342,6 @@ export default function AdminDashboard() {
           is_active: link.is_active !== false,
           sort_order: index
         };
-        // If not a new link, keep its ID
         if (!link.id.startsWith('new-')) {
           row.id = link.id;
         }
@@ -328,7 +357,6 @@ export default function AdminDashboard() {
 
       showToast('All CMS Changes Published Live!', 'success');
 
-      // Reload fresh data to replace temporary 'new-*' client IDs
       const { data: refreshedLinks, error: refreshErr } = await supabase
         .from('links')
         .select('*')
@@ -369,8 +397,17 @@ export default function AdminDashboard() {
     );
   }
 
+  const getTabLabel = () => {
+    switch (activeTab) {
+      case 'dashboard': return 'Dashboard';
+      case 'about': return 'About me';
+      case 'settings': return 'Settings';
+      default: return activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#181820] text-slate-100 flex font-sans">
       {/* Toast Alert */}
       {toast && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-bounce">
@@ -384,34 +421,81 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Dynamic Header */}
-      <DashboardHeader saving={saving} onSave={saveAllChanges} onLogout={handleLogout} />
+      {/* Sidebar Drawer — does NOT auto-hide on tab select */}
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        activeTab={activeTab}
+        onTabSelect={setActiveTab}
+        onLogout={handleLogout}
+      />
 
-      {/* Main Workspace */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Main Workspace Frame — shifts right when sidebar is open */}
+      <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${isSidebarOpen ? 'lg:pl-64' : ''}`}>
         
-        {/* Left Side: Profile Information */}
-        <section className="space-y-6 lg:col-span-1">
-          {/* Dynamic Profile Editor Form */}
-          <ProfileEditor profile={profile} onChange={handleProfileChange} />
+        {/* Dynamic Header with burger toggle */}
+        <DashboardHeader 
+          saving={saving} 
+          onSave={saveAllChanges} 
+          onLogout={handleLogout} 
+          onMenuToggle={() => setIsSidebarOpen(prev => !prev)} 
+        />
 
-          {/* Dynamic Socials Editor Form */}
-          <SocialsEditor socials={profile.socials} onChange={handleSocialChange} />
-        </section>
+        {/* Content Container */}
+        <main className="max-w-4xl w-full mx-auto px-6 py-10 flex-1 flex flex-col justify-start">
+          
+          {/* Active Title Block */}
+          <div className="mb-6">
+            <h2 className="text-2xl font-black text-white tracking-tight">{getTabLabel()}</h2>
+            <p className="text-xs text-slate-500 mt-1">
+              {activeTab === 'dashboard' ? 'Welcome to the administration panel.' : `Configure your ${getTabLabel()} content.`}
+            </p>
+            <div className="border-b border-slate-900/60 my-5" />
+          </div>
 
-        {/* Right Side: Links Manager */}
-        <section className="lg:col-span-2">
-          {/* Dynamic Links List & Sort Manager */}
-          <LinksManager
-            links={links}
-            onAddLink={addLink}
-            onLinkChange={handleLinkChange}
-            onMoveLink={moveLink}
-            onDeleteLink={deleteLink}
-          />
-        </section>
+          {/* Tab Panels */}
+          {activeTab === 'dashboard' && (
+            <div className="flex-1 flex items-center justify-center py-20">
+              <p className="text-xs text-slate-500 text-center max-w-sm leading-relaxed">
+                Dashboard main view is currently empty. Navigate to other sections in the sidebar to configure content.
+              </p>
+            </div>
+          )}
 
-      </main>
+          {activeTab === 'about' && (
+            <div className="space-y-6 animate-fadeIn">
+              <ProfileEditor profile={profile} onChange={handleProfileChange} />
+              <SocialsEditor socials={profile.socials} onChange={handleSocialChange} />
+            </div>
+          )}
+
+          {(activeTab === 'home' || activeTab === 'services' || activeTab === 'portfolio' || activeTab === 'experience') && (
+            <div className="animate-fadeIn">
+              <LinksManager
+                links={links}
+                onAddLink={addLink}
+                onLinkChange={handleLinkChange}
+                onMoveLink={moveLink}
+                onDeleteLink={deleteLink}
+              />
+            </div>
+          )}
+
+          {activeTab === 'settings' && (
+            <div className="animate-fadeIn">
+              <SettingsEditor 
+                settings={{
+                  active_theme: profile.active_theme,
+                  meta_title: profile.meta_title,
+                  meta_description: profile.meta_description
+                }} 
+                onChange={handleSettingsChange} 
+              />
+            </div>
+          )}
+
+        </main>
+      </div>
     </div>
   );
 }
