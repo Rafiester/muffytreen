@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import ElectricBorder from '../ui/ElectricBorder.vue';
+import ElectricBorder from '../../ui/ElectricBorder/index.vue';
 
 interface LinkItem {
   id: string;

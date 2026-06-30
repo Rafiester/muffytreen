@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import LinkEditorItem from './LinkEditorItem.vue';
+import LinkEditorItem from '../LinkEditorItem/index.vue';
 
 interface LinkItem {
   id: string;

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import profileData from '../data/mockData.json';
-import ThemeToggle from '../components/ui/ThemeToggle.vue';
-import LinkCard from '../components/profile/LinkCard.vue';
-import ProfileHeader from '../components/profile/ProfileHeader.vue';
-import ProfileFooter from '../components/profile/ProfileFooter.vue';
+import ThemeToggle from '../components/ui/ThemeToggle/index.vue';
+import LinkCard from '../components/profile/LinkCard/index.vue';
+import ProfileHeader from '../components/profile/ProfileHeader/index.vue';
+import ProfileFooter from '../components/profile/ProfileFooter/index.vue';
 import { supabase, hasSupabaseConfig } from '../lib/supabase';
 
 type Theme = 'clean-light' | 'pitch-dark' | 'retro' | 'fluent' | 'solarized' | 'electric';
@@ -191,11 +191,4 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped>
-.electric-list {
-  margin-top: -104px; /* Collapse spacing between ProfileHeader bottom bleed and first card top bleed */
-}
-.electric-list > * + * {
-  margin-top: -104px; /* Collapse spacing between adjacent electric cards */
-}
-</style>
+<style scoped src="~/assets/css/pages/index.css"></style>

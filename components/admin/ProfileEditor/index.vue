@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import AvatarUploader from './AvatarUploader.vue';
+import AvatarUploader from '../AvatarUploader/index.vue';
 
 type Theme = 'clean-light' | 'pitch-dark' | 'retro' | 'fluent' | 'solarized';
 

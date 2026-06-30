@@ -1,0 +1,6 @@
+.electric-list {
+  margin-top: -104px; /* Collapse spacing between ProfileHeader bottom bleed and first card top bleed */
+}
+.electric-list > * + * {
+  margin-top: -104px; /* Collapse spacing between adjacent electric cards */
+}

@@ -246,15 +246,4 @@ loadImage();
   </div>
 </template>
 
-<style scoped>
-/* Custom styled range slider inputs */
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #af413c;
-  cursor: pointer;
-}
-</style>
+<style scoped src="./AvatarUploader.css"></style>
