@@ -363,11 +363,11 @@ const wrapperStyle = computed<CSSProperties>(() => ({
 
 <template>
   <div ref="containerRef" :class="['relative overflow-visible isolate', className]" :style="wrapperStyle">
-    <div class="top-1/2 left-1/2 z-2 absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+    <div class="top-1/2 left-1/2 z-10 absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none">
       <canvas ref="canvasRef" class="block" />
     </div>
 
-    <div class="z-0 absolute inset-0 rounded-[inherit] pointer-events-none">
+    <div class="z-[5] absolute inset-0 rounded-[inherit] pointer-events-none">
       <div
         class="absolute inset-0 rounded-[inherit] pointer-events-none"
         :style="{
