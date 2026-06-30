@@ -62,7 +62,7 @@ export default function AdminDashboard() {
 
   // Tab & Drawer State — sidebar starts closed, user toggles it open
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Profile State
   const [profile, setProfile] = useState<Profile>({
