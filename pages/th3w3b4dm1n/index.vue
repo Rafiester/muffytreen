@@ -60,6 +60,20 @@ const loading = ref(true);
 const saving = ref(false);
 const toast = ref<{ message: string; type: 'success' | 'error' } | null>(null);
 
+useHead({
+  htmlAttrs: {
+    style: 'background-color: #1e1d23 !important;'
+  },
+  bodyAttrs: {
+    style: 'background-color: #1e1d23 !important;'
+  },
+  meta: [
+    {
+      name: 'theme-color',
+      content: '#1e1d23'
+    }
+  ]
+});
 // Tab State
 const activeTab = ref<TabType>('dashboard');
 
