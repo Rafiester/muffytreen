@@ -18,6 +18,7 @@ interface Profile {
 const props = defineProps<{
   profile: Profile;
   theme: 'clean-light' | 'pitch-dark' | 'retro' | 'fluent' | 'solarized' | 'electric';
+  electricAccentColor?: string;
 }>();
 
 const isRetro = computed(() => props.theme === 'retro');
@@ -29,7 +30,7 @@ const isDark = computed(() => ['pitch-dark', 'solarized', 'fluent', 'electric'].
   <div :class="theme === 'electric' ? 'w-full pb-[60px]' : 'w-full'">
     <component
       :is="theme === 'electric' ? ElectricBorder : 'div'"
-      v-bind="theme === 'electric' ? { color: '#10b981', borderRadius: 24, chaos: 0.12, style: { borderRadius: '24px' } } : {}"
+      v-bind="theme === 'electric' ? { color: electricAccentColor || '#10b981', borderRadius: 24, chaos: 0.12, style: { borderRadius: '24px' } } : {}"
       class="w-full"
     >
       <section 

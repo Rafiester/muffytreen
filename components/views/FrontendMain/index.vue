@@ -267,7 +267,7 @@ onMounted(async () => {
     <!-- Main Link-in-Bio Container -->
     <main class="w-full max-w-xl px-4 flex-1 flex flex-col items-center">
       <!-- Dynamic Profile Header -->
-      <ProfileHeader v-if="profile" :profile="profile" :theme="theme" />
+      <ProfileHeader v-if="profile" :profile="profile" :theme="theme" :electricAccentColor="electricAccentColor" />
 
       <!-- Dynamic Link List -->
       <section :class="['w-full flex flex-col mb-12 mt-4', theme === 'electric' ? 'gap-0 electric-list' : 'gap-4']">
