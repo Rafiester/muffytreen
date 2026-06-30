@@ -30,42 +30,6 @@ export default function ProfileEditor({ profile, onChange }: ProfileEditorProps)
 
       <div className="space-y-5">
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="display-name">Display Name</label>
-          <input
-            id="display-name"
-            type="text"
-            value={profile.name}
-            onChange={(e) => onChange('name', e.target.value)}
-            className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
-            placeholder="Alex Rivera"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="display-title">Professional Title</label>
-          <input
-            id="display-title"
-            type="text"
-            value={profile.title}
-            onChange={(e) => onChange('title', e.target.value)}
-            className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
-            placeholder="Product Designer & Engineer"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="display-bio">Short Bio</label>
-          <textarea
-            id="display-bio"
-            value={profile.bio}
-            onChange={(e) => onChange('bio', e.target.value)}
-            rows={3}
-            className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all resize-none"
-            placeholder="Brief description about yourself..."
-          />
-        </div>
-
-        <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2">Avatar Profile Image</label>
           <div className="flex items-center gap-4">
             {/* Avatar Preview */}
@@ -125,6 +89,42 @@ export default function ProfileEditor({ profile, onChange }: ProfileEditorProps)
               </span>
             </div>
           </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="display-name">Display Name</label>
+          <input
+            id="display-name"
+            type="text"
+            value={profile.name}
+            onChange={(e) => onChange('name', e.target.value)}
+            className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
+            placeholder="Alex Rivera"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="display-title">Professional Title</label>
+          <input
+            id="display-title"
+            type="text"
+            value={profile.title}
+            onChange={(e) => onChange('title', e.target.value)}
+            className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all"
+            placeholder="Product Designer & Engineer"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-white/25 mb-2" htmlFor="display-bio">Short Bio</label>
+          <textarea
+            id="display-bio"
+            value={profile.bio}
+            onChange={(e) => onChange('bio', e.target.value)}
+            rows={3}
+            className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] focus:border-[#af413c]/50 rounded-xl outline-none text-white/80 text-sm transition-all resize-none"
+            placeholder="Brief description about yourself..."
+          />
         </div>
       </div>
     </div>
