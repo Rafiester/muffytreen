@@ -118,9 +118,20 @@ const showToast = (message: string, type: 'success' | 'error') => {
   }, 3000);
 };
 
+const getCookie = (name: string): string | null => {
+  const matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : null;
+};
+
+const deleteCookie = (name: string) => {
+  document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax; Secure`;
+};
+
 // Authentication & Initial Load
 onMounted(() => {
-  const isAuthed = localStorage.getItem('admin-session') === 'true';
+  const isAuthed = localStorage.getItem('admin-session') === 'true' || !!getCookie('admin-access-token');
   if (!isAuthed) {
     router.push('/th3w3b4dm1n/login');
     return;
@@ -409,6 +420,8 @@ const saveAllChanges = async () => {
 
 const handleLogout = () => {
   localStorage.removeItem('admin-session');
+  deleteCookie('admin-access-token');
+  deleteCookie('admin-refresh-token');
   router.push('/th3w3b4dm1n/login');
 };
 </script>

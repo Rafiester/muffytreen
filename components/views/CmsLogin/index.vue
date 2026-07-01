@@ -21,8 +21,19 @@ useHead({
   ]
 });
 
+const setCookie = (name: string, value: string, maxAgeSeconds: number) => {
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; SameSite=Lax; Secure`;
+};
+
+const getCookie = (name: string): string | null => {
+  const matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : null;
+};
+
 onMounted(() => {
-  const isAuthed = localStorage.getItem('admin-session') === 'true';
+  const isAuthed = localStorage.getItem('admin-session') === 'true' || !!getCookie('admin-access-token');
   if (isAuthed) {
     router.push('/th3w3b4dm1n');
   } else {
@@ -37,6 +48,10 @@ const handleLogin = (e: Event) => {
 
   setTimeout(() => {
     if (username.value === 'admin' && password.value === 'admin') {
+      // Access token valid for 1 hour (3600 seconds)
+      setCookie('admin-access-token', 'mock-access-token-' + Date.now(), 3600);
+      // Refresh token valid for 7 days (604800 seconds)
+      setCookie('admin-refresh-token', 'mock-refresh-token-' + Date.now(), 604800);
       localStorage.setItem('admin-session', 'true');
       router.push('/th3w3b4dm1n');
     } else {
