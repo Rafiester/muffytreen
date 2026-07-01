@@ -66,8 +66,8 @@ Configure the following environment variables in your **Vercel Project Settings*
 
 | Variable Name | Description / Example Value |
 | --- | --- |
-| `DATABASE_URL` | Transaction Mode connection string. E.g.: `postgresql://postgres.awfdwhgeboiwgnflzqoi:muffyn-space2@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true` |
-| `DIRECT_URL` | Session Mode direct connection string (Port 5432). E.g.: `postgresql://postgres.awfdwhgeboiwgnflzqoi:muffyn-space2@db.awfdwhgeboiwgnflzqoi.supabase.co:5432/postgres` |
+| `DATABASE_URL` | Transaction Mode connection string. E.g.: `postgresql://postgres.awfdwhgeboiwgnflzqoi:[YOUR-PASSWORD]@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true` |
+| `DIRECT_URL` | Session Mode direct connection string (Port 5432). E.g.: `postgresql://postgres.awfdwhgeboiwgnflzqoi:[YOUR-PASSWORD]@db.awfdwhgeboiwgnflzqoi.supabase.co:5432/postgres` |
 | `VITE_SUPABASE_URL` | Your Supabase Project API endpoint. E.g.: `https://awfdwhgeboiwgnflzqoi.supabase.co` |
 | `VITE_SUPABASE_ANON_KEY` | Your Supabase Project **Anon / Public Key** |
 
