@@ -181,8 +181,11 @@ onMounted(async () => {
   }
 
   async function loadCMSData() {
-    if (!hasSupabaseConfig || !supabase) {
-      console.log("Supabase credentials not configured. Loading editable local state.");
+    const accessToken = getCookie('admin-access-token');
+    const isLocalBypass = accessToken && accessToken.includes('local-admin-uid-12345');
+
+    if (!hasSupabaseConfig || !supabase || isLocalBypass) {
+      console.log("Supabase not active or local bypass session. Loading editable local state.");
       const localProfile = localStorage.getItem('cms-profile');
       const localLinks = localStorage.getItem('cms-links');
 
