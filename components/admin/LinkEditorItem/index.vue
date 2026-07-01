@@ -55,8 +55,8 @@ const onFileInput = (e: Event) => {
     ]"
   >
     <!-- Header bar of link panel -->
-    <div class="flex items-center justify-between pb-3 border-b border-white/[0.04] gap-4">
-      <div class="flex items-center gap-2 flex-1">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-white/[0.04] gap-4">
+      <div class="flex items-center gap-2 flex-1 w-full">
         <!-- Drag handle graphic indicator only when reordering is toggled -->
         <svg v-if="isDragActive" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 text-[#e8736e]">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
@@ -73,13 +73,13 @@ const onFileInput = (e: Event) => {
       </div>
       
       <!-- Active state, Featured toggle, and Delete buttons -->
-      <div class="flex items-center gap-1.5 flex-wrap">
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 w-full sm:w-auto">
         <!-- Featured toggle switch -->
         <button
           type="button"
           @click="emit('linkChange', idx, 'featured', !link.featured)"
           :class="[
-            'px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border transition-all flex items-center gap-1.5',
+            'px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border transition-all flex items-center justify-center gap-1.5 w-full sm:w-auto',
             link.featured
               ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
               : 'bg-white/[0.04] border-white/[0.06] text-white/30 hover:text-white/40'
@@ -106,7 +106,7 @@ const onFileInput = (e: Event) => {
         <button
           @click="emit('linkChange', idx, 'is_active', !(link.is_active ?? true))"
           :class="[
-            'px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border transition-all flex items-center gap-1',
+            'px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border transition-all flex items-center justify-center gap-1 w-full sm:w-auto',
             (link.is_active ?? true)
               ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
               : 'bg-white/[0.04] border-white/[0.06] text-white/30'
@@ -128,7 +128,7 @@ const onFileInput = (e: Event) => {
         <!-- Delete link -->
         <button
           @click="emit('deleteLink', idx)"
-          class="px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border bg-rose-500/10 border-rose-500/20 hover:bg-rose-500/20 text-rose-400 transition-all flex items-center gap-1"
+          class="px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border bg-rose-500/10 border-rose-500/20 hover:bg-rose-500/20 text-rose-400 transition-all flex items-center justify-center gap-1 w-full sm:w-auto"
           title="Delete Link"
           :disabled="isDragActive"
         >
