@@ -67,43 +67,9 @@ const handleLogin = async (e: Event) => {
   error.value = null;
   loading.value = true;
 
-  // 1. Try real Supabase Auth first if configured
-  if (hasSupabaseConfig && supabase) {
-    try {
-      const { data, error: authErr } = await supabase.auth.signInWithPassword({
-        email: username.value,
-        password: password.value,
-      });
-
-      if (authErr) {
-        // If credentials invalid for Supabase, don't fallback immediately, throw to notify
-        throw authErr;
-      }
-
-      if (data?.session) {
-        setCookie('admin-access-token', data.session.access_token, data.session.expires_in || 3600);
-        if (data.session.refresh_token) {
-          setCookie('admin-refresh-token', data.session.refresh_token, 604800);
-        }
-        localStorage.setItem('admin-session', 'true');
-        router.push('/th3w3b4dm1n');
-        return;
-      }
-    } catch (err: any) {
-      console.warn("Supabase auth error:", err.message);
-      // If it's a structural connection or setup error, we can allow falling back to local admin/admin.
-      // But if it's invalid login credentials for Supabase, let's output a warning.
-      if (err.message && err.message.toLowerCase().includes('invalid login credentials')) {
-        error.value = 'Invalid Supabase credentials. Try admin/admin fallback if offline.';
-        loading.value = false;
-        return;
-      }
-    }
-  }
-
-  // 2. Fallback to Local Auth (admin/admin) with real-format JWT tokens
-  setTimeout(() => {
-    if (username.value === 'admin' && password.value === 'admin') {
+  // 1. Instantly bypass Supabase Auth if credentials match local admin/admin fallback
+  if (username.value === 'admin' && password.value === 'admin') {
+    setTimeout(() => {
       const now = Math.floor(Date.now() / 1000);
       const accessPayload = {
         sub: 'local-admin-uid-12345',
@@ -127,11 +93,42 @@ const handleLogin = async (e: Event) => {
       setCookie('admin-refresh-token', realRefreshToken, 604800);
       localStorage.setItem('admin-session', 'true');
       router.push('/th3w3b4dm1n');
-    } else {
-      error.value = 'Invalid username or password. Please try again.';
+    }, 600);
+    return;
+  }
+
+  // 2. Try real Supabase Auth for any other credentials
+  if (hasSupabaseConfig && supabase) {
+    try {
+      const { data, error: authErr } = await supabase.auth.signInWithPassword({
+        email: username.value,
+        password: password.value,
+      });
+
+      if (authErr) {
+        throw authErr;
+      }
+
+      if (data?.session) {
+        setCookie('admin-access-token', data.session.access_token, data.session.expires_in || 3600);
+        if (data.session.refresh_token) {
+          setCookie('admin-refresh-token', data.session.refresh_token, 604800);
+        }
+        localStorage.setItem('admin-session', 'true');
+        router.push('/th3w3b4dm1n');
+        return;
+      }
+    } catch (err: any) {
+      console.warn("Supabase auth error:", err.message);
+      error.value = err.message || 'Invalid credentials. Please try again.';
       loading.value = false;
+      return;
     }
-  }, 600);
+  } else {
+    // If Supabase not configured and not admin/admin
+    error.value = 'Invalid username or password. Please try again.';
+    loading.value = false;
+  }
 };
 
 const handleAutofill = () => {
