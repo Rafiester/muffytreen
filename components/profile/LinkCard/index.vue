@@ -69,8 +69,9 @@ const isCustomIcon = computed(() => {
         v-if="link.featured"
         :class="[
           'absolute top-0 left-0 w-2 h-full',
-          isRetro ? 'bg-black' : theme === 'electric' ? 'bg-emerald-400' : 'bg-indigo-600'
+          isRetro ? 'bg-black' : theme === 'electric' ? '' : 'bg-indigo-600'
         ]"
+        :style="theme === 'electric' ? { backgroundColor: activeAccentColor || '#10b981' } : {}"
       />
 
       <div class="flex items-center gap-4 relative z-10">
