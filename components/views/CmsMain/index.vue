@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from '#app';
 import profileData from '../../../data/mockData.json';
 import { supabase, hasSupabaseConfig } from '../../../lib/supabase';
@@ -129,13 +129,45 @@ const deleteCookie = (name: string) => {
   document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax; Secure`;
 };
 
+const isTokenExpired = (token: string | null): boolean => {
+  if (!token) return true;
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return true;
+    const payloadUrl = parts[1];
+    const base64 = payloadUrl.replace(/-/g, '+').replace(/_/g, '/');
+    const decoded = JSON.parse(atob(base64));
+    if (decoded.exp) {
+      const now = Math.floor(Date.now() / 1000);
+      return decoded.exp < now;
+    }
+    return false;
+  } catch (e) {
+    return true;
+  }
+};
+
+let expiryCheckInterval: any = null;
+
 // Authentication & Initial Load
 onMounted(async () => {
-  const isAuthed = localStorage.getItem('admin-session') === 'true' || !!getCookie('admin-access-token');
+  const accessToken = getCookie('admin-access-token');
+  const isAuthed = localStorage.getItem('admin-session') === 'true' && !isTokenExpired(accessToken);
   if (!isAuthed) {
-    router.push('/th3w3b4dm1n/login');
+    handleLogout();
     return;
   }
+
+  // Set up periodic interval check to detect token removal or expiration in real-time
+  expiryCheckInterval = setInterval(() => {
+    const currentToken = getCookie('admin-access-token');
+    if (isTokenExpired(currentToken)) {
+      showToast('Session expired. Redirecting to login...', 'error');
+      setTimeout(() => {
+        handleLogout();
+      }, 1500);
+    }
+  }, 5000);
 
   if (hasSupabaseConfig && supabase) {
     const accessToken = getCookie('admin-access-token');
@@ -430,11 +462,20 @@ const saveAllChanges = async () => {
 };
 
 const handleLogout = () => {
+  if (expiryCheckInterval) {
+    clearInterval(expiryCheckInterval);
+  }
   localStorage.removeItem('admin-session');
   deleteCookie('admin-access-token');
   deleteCookie('admin-refresh-token');
   router.push('/th3w3b4dm1n/login');
 };
+
+onBeforeUnmount(() => {
+  if (expiryCheckInterval) {
+    clearInterval(expiryCheckInterval);
+  }
+});
 </script>
 
 <template>
