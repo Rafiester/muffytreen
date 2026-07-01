@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import profileData from '../../../data/mockData.json';
 import ThemeToggle from '../../ui/ThemeToggle/index.vue';
 import LinkCard from '../../profile/LinkCard/index.vue';
@@ -93,164 +93,212 @@ const migrateSocials = (rawSocials: any) => {
   };
 };
 
-onMounted(async () => {
-  const allowedThemes: Theme[] = ['clean-light', 'pitch-dark', 'retro', 'fluent', 'solarized', 'electric'];
+const allowedThemes: Theme[] = ['clean-light', 'pitch-dark', 'retro', 'fluent', 'solarized', 'electric'];
 
-  // 1. Read from localStorage if running outside of CMS context but want to preview
-  const savedTheme = localStorage.getItem('user-theme') as Theme;
-  if (savedTheme && allowedThemes.includes(savedTheme)) {
-    theme.value = savedTheme;
+async function loadData() {
+  if (!hasSupabaseConfig || !supabase) {
+    console.log("Supabase credentials not configured. Loading editable local state.");
+    const localProfile = localStorage.getItem('cms-profile');
+    const localLinks = localStorage.getItem('cms-links');
+
+    if (localProfile) {
+      const parsed = JSON.parse(localProfile);
+      profile.value = {
+        name: parsed.name || '',
+        title: parsed.title || '',
+        bio: parsed.bio || '',
+        avatar: parsed.avatar || '',
+        meta_title: parsed.meta_title || parsed.socials?.meta_title || '',
+        meta_description: parsed.meta_description || parsed.socials?.meta_description || '',
+        socials: migrateSocials(parsed.socials)
+      };
+      const pTheme = parsed.active_theme || parsed.activeTheme;
+      if (pTheme && allowedThemes.includes(pTheme)) theme.value = pTheme;
+    } else {
+      profile.value = {
+        ...profileData.profile,
+        socials: profileData.profile.socials
+      } as Profile;
+      if (profileData.settings?.activeTheme) theme.value = profileData.settings.activeTheme as Theme;
+    }
+
+    if (localLinks) {
+      links.value = JSON.parse(localLinks);
+    } else {
+      links.value = profileData.links;
+    }
+
+    const localSettings = localStorage.getItem('cms-settings');
+    if (localSettings) {
+      const parsedSettings = JSON.parse(localSettings);
+      if (parsedSettings.electricAccentColor) {
+        electricAccentColor.value = parsedSettings.electricAccentColor;
+      }
+    } else if (profileData.settings?.electricAccentColor) {
+      electricAccentColor.value = profileData.settings.electricAccentColor;
+    }
+    
+    const activeTheme = profile.value?.active_theme || profileData.settings?.activeTheme as Theme;
+    const savedTheme = localStorage.getItem('user-theme') as Theme;
+    const initialTheme = (savedTheme && allowedThemes.includes(savedTheme))
+      ? savedTheme
+      : (activeTheme && allowedThemes.includes(activeTheme))
+        ? activeTheme
+        : 'clean-light';
+    theme.value = initialTheme;
+    document.documentElement.setAttribute('data-theme', initialTheme);
+    
+    loading.value = false;
+    mounted.value = true;
+    return;
   }
 
-  async function loadData() {
-    if (!hasSupabaseConfig || !supabase) {
-      console.log("Supabase credentials not configured. Loading editable local state.");
-      const localProfile = localStorage.getItem('cms-profile');
-      const localLinks = localStorage.getItem('cms-links');
+  try {
+    loading.value = true;
+    // Fetch the active profile
+    const { data: profileDataDb, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .limit(1)
+      .single();
 
-      if (localProfile) {
-        const parsed = JSON.parse(localProfile);
-        profile.value = {
-          name: parsed.name || '',
-          title: parsed.title || '',
-          bio: parsed.bio || '',
-          avatar: parsed.avatar || '',
-          meta_title: parsed.meta_title || parsed.socials?.meta_title || '',
-          meta_description: parsed.meta_description || parsed.socials?.meta_description || '',
-          socials: migrateSocials(parsed.socials)
-        };
-        const pTheme = parsed.active_theme || parsed.activeTheme;
-        if (pTheme && allowedThemes.includes(pTheme)) theme.value = pTheme;
-      } else {
-        profile.value = {
-          ...profileData.profile,
-          socials: profileData.profile.socials
-        } as Profile;
-        if (profileData.settings?.activeTheme) theme.value = profileData.settings.activeTheme as Theme;
-      }
+    if (profileError) throw profileError;
 
-      if (localLinks) {
-        links.value = JSON.parse(localLinks);
-      } else {
-        links.value = profileData.links;
-      }
+    if (profileDataDb) {
+      const mappedProfile: Profile = {
+        name: profileDataDb.display_name,
+        title: profileDataDb.title || 'Creative Technologist',
+        bio: profileDataDb.bio,
+        avatar: profileDataDb.avatar_url,
+        meta_title: profileDataDb.socials?.meta_title || '',
+        meta_description: profileDataDb.socials?.meta_description || '',
+        socials: migrateSocials(profileDataDb.socials),
+      };
+      profile.value = mappedProfile;
 
+      // Try load settings from local storage as well for mock DB consistency, or from DB if available
       const localSettings = localStorage.getItem('cms-settings');
       if (localSettings) {
         const parsedSettings = JSON.parse(localSettings);
         if (parsedSettings.electricAccentColor) {
           electricAccentColor.value = parsedSettings.electricAccentColor;
         }
+      } else if (profileDataDb.electric_accent_color) {
+        electricAccentColor.value = profileDataDb.electric_accent_color;
       } else if (profileData.settings?.electricAccentColor) {
         electricAccentColor.value = profileData.settings.electricAccentColor;
       }
-      
-      const activeTheme = profile.value?.active_theme || profileData.settings?.activeTheme as Theme;
+
+      // Apply active theme
+      const activeTheme = profileDataDb.active_theme as Theme;
+      let targetTheme: Theme = 'clean-light';
       const savedTheme = localStorage.getItem('user-theme') as Theme;
-      const initialTheme = (savedTheme && allowedThemes.includes(savedTheme))
-        ? savedTheme
-        : (activeTheme && allowedThemes.includes(activeTheme))
-          ? activeTheme
-          : 'clean-light';
-      theme.value = initialTheme;
-      document.documentElement.setAttribute('data-theme', initialTheme);
       
-      loading.value = false;
-      mounted.value = true;
-      return;
-    }
-
-    try {
-      loading.value = true;
-      // Fetch the active profile
-      const { data: profileDataDb, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .limit(1)
-        .single();
-
-      if (profileError) throw profileError;
-
-      if (profileDataDb) {
-        const mappedProfile: Profile = {
-          name: profileDataDb.display_name,
-          title: profileDataDb.title || 'Creative Technologist',
-          bio: profileDataDb.bio,
-          avatar: profileDataDb.avatar_url,
-          meta_title: profileDataDb.socials?.meta_title || '',
-          meta_description: profileDataDb.socials?.meta_description || '',
-          socials: migrateSocials(profileDataDb.socials),
-        };
-        profile.value = mappedProfile;
-
-        // Try load settings from local storage as well for mock DB consistency, or from DB if available
-        const localSettings = localStorage.getItem('cms-settings');
-        if (localSettings) {
-          const parsedSettings = JSON.parse(localSettings);
-          if (parsedSettings.electricAccentColor) {
-            electricAccentColor.value = parsedSettings.electricAccentColor;
-          }
-        } else if (profileDataDb.electric_accent_color) {
-          electricAccentColor.value = profileDataDb.electric_accent_color;
-        } else if (profileData.settings?.electricAccentColor) {
-          electricAccentColor.value = profileData.settings.electricAccentColor;
-        }
-
-        // Apply active theme
-        const activeTheme = profileDataDb.active_theme as Theme;
-        let targetTheme: Theme = 'clean-light';
-        const savedTheme = localStorage.getItem('user-theme') as Theme;
-        
-        if (savedTheme && allowedThemes.includes(savedTheme)) {
-          targetTheme = savedTheme;
-        } else if (activeTheme && allowedThemes.includes(activeTheme)) {
-          targetTheme = activeTheme;
-        }
-        
-        theme.value = targetTheme;
-        document.documentElement.setAttribute('data-theme', targetTheme);
-
-        // Fetch active links
-        const { data: linksDataDb, error: linksError } = await supabase
-          .from('links')
-          .select('*')
-          .eq('profile_id', profileDataDb.id)
-          .eq('is_active', true)
-          .order('sort_order', { ascending: true });
-
-        if (linksError) throw linksError;
-
-        if (linksDataDb) {
-          const mappedLinks = (linksDataDb as DbLink[]).map((link: DbLink) => ({
-            id: link.id,
-            title: link.title,
-            description: link.description || '',
-            url: link.url,
-            icon: link.icon_name,
-            featured: link.featured || false
-          }));
-          links.value = mappedLinks;
-        }
+      if (savedTheme && allowedThemes.includes(savedTheme)) {
+        targetTheme = savedTheme;
+      } else if (activeTheme && allowedThemes.includes(activeTheme)) {
+        targetTheme = activeTheme;
       }
-    } catch (err: any) {
-      const errMsg = err instanceof Error ? err.message : String(err);
-      console.error("Error loading data from Supabase:", errMsg);
-      error.value = errMsg;
-      // Fallback
-      profile.value = profileData.profile;
-      links.value = profileData.links;
       
-      const savedTheme = localStorage.getItem('user-theme') as Theme;
-      const initialTheme = (savedTheme && allowedThemes.includes(savedTheme)) ? savedTheme : 'clean-light';
-      theme.value = initialTheme;
-      document.documentElement.setAttribute('data-theme', initialTheme);
-    } finally {
-      loading.value = false;
-      mounted.value = true;
+      theme.value = targetTheme;
+      document.documentElement.setAttribute('data-theme', targetTheme);
+
+      // Fetch active links
+      const { data: linksDataDb, error: linksError } = await supabase
+        .from('links')
+        .select('*')
+        .eq('profile_id', profileDataDb.id)
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
+
+      if (linksError) throw linksError;
+
+      if (linksDataDb) {
+        const mappedLinks = (linksDataDb as DbLink[]).map((link: DbLink) => ({
+          id: link.id,
+          title: link.title,
+          description: link.description || '',
+          url: link.url,
+          icon: link.icon_name,
+          featured: link.featured || false
+        }));
+        links.value = mappedLinks;
+      }
     }
+  } catch (err: any) {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    console.error("Error loading data from Supabase:", errMsg);
+    error.value = errMsg;
+    // Fallback
+    profile.value = profileData.profile;
+    links.value = profileData.links;
+    
+    const savedTheme = localStorage.getItem('user-theme') as Theme;
+    const initialTheme = (savedTheme && allowedThemes.includes(savedTheme)) ? savedTheme : 'clean-light';
+    theme.value = initialTheme;
+    document.documentElement.setAttribute('data-theme', initialTheme);
+  } finally {
+    loading.value = false;
+    mounted.value = true;
+  }
+}
+
+let profileChannel: any = null;
+let linksChannel: any = null;
+
+const handleStorageChange = (e: StorageEvent) => {
+  if (e.key === 'cms-profile' || e.key === 'cms-links' || e.key === 'cms-settings') {
+    loadData();
+  }
+};
+
+onMounted(async () => {
+  // 1. Read from localStorage if running outside of CMS context but want to preview
+  const savedTheme = localStorage.getItem('user-theme') as Theme;
+  if (savedTheme && allowedThemes.includes(savedTheme)) {
+    theme.value = savedTheme;
   }
 
-  loadData();
+  // Load initial data
+  await loadData();
+
+  // Listen to storage events (offline/local mode synchronization across tabs)
+  window.addEventListener('storage', handleStorageChange);
+
+  // Subscribe to Supabase Realtime changes if configured
+  if (hasSupabaseConfig && supabase) {
+    profileChannel = supabase
+      .channel('public-profiles-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'profiles' },
+        () => {
+          loadData();
+        }
+      )
+      .subscribe();
+
+    linksChannel = supabase
+      .channel('public-links-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'links' },
+        () => {
+          loadData();
+        }
+      )
+      .subscribe();
+  }
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('storage', handleStorageChange);
+  if (profileChannel) {
+    supabase?.removeChannel(profileChannel);
+  }
+  if (linksChannel) {
+    supabase?.removeChannel(linksChannel);
+  }
 });
 </script>
 
