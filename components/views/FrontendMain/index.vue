@@ -110,10 +110,14 @@ async function loadData() {
         avatar: parsed.avatar || '',
         meta_title: parsed.meta_title || parsed.socials?.meta_title || '',
         meta_description: parsed.meta_description || parsed.socials?.meta_description || '',
+        electricAccentColor: parsed.electricAccentColor || parsed.electric_accent_color || '',
         socials: migrateSocials(parsed.socials)
-      };
+      } as any;
       const pTheme = parsed.active_theme || parsed.activeTheme;
       if (pTheme && allowedThemes.includes(pTheme)) theme.value = pTheme;
+      if (parsed.electricAccentColor || parsed.electric_accent_color) {
+        electricAccentColor.value = parsed.electricAccentColor || parsed.electric_accent_color;
+      }
     } else {
       profile.value = {
         ...profileData.profile,
