@@ -130,11 +130,22 @@ const deleteCookie = (name: string) => {
 };
 
 // Authentication & Initial Load
-onMounted(() => {
+onMounted(async () => {
   const isAuthed = localStorage.getItem('admin-session') === 'true' || !!getCookie('admin-access-token');
   if (!isAuthed) {
     router.push('/th3w3b4dm1n/login');
     return;
+  }
+
+  if (hasSupabaseConfig && supabase) {
+    const accessToken = getCookie('admin-access-token');
+    const refreshToken = getCookie('admin-refresh-token');
+    if (accessToken && refreshToken) {
+      await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken
+      });
+    }
   }
 
   async function loadCMSData() {
