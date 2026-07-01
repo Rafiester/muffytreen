@@ -132,13 +132,7 @@ async function loadData() {
       links.value = profileData.links;
     }
 
-    const localSettings = localStorage.getItem('cms-settings');
-    if (localSettings) {
-      const parsedSettings = JSON.parse(localSettings);
-      if (parsedSettings.electricAccentColor) {
-        electricAccentColor.value = parsedSettings.electricAccentColor;
-      }
-    } else if (profileData.settings?.electricAccentColor) {
+    if (!electricAccentColor.value && profileData.settings?.electricAccentColor) {
       electricAccentColor.value = profileData.settings.electricAccentColor;
     }
     
@@ -180,14 +174,7 @@ async function loadData() {
       };
       profile.value = mappedProfile;
 
-      // Try load settings from local storage as well for mock DB consistency, or from DB if available
-      const localSettings = localStorage.getItem('cms-settings');
-      if (localSettings) {
-        const parsedSettings = JSON.parse(localSettings);
-        if (parsedSettings.electricAccentColor) {
-          electricAccentColor.value = parsedSettings.electricAccentColor;
-        }
-      } else if (profileDataDb.electric_accent_color) {
+      if (profileDataDb.electric_accent_color) {
         electricAccentColor.value = profileDataDb.electric_accent_color;
       } else if (profileData.settings?.electricAccentColor) {
         electricAccentColor.value = profileData.settings.electricAccentColor;
