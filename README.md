@@ -55,3 +55,30 @@ npm run preview
 - **Styling:** Tailwind CSS
 - **AI Builder:** Antigravity (Powered by Gemini Flash)
 - **Methodology:** Vibe Coding
+
+## 🚀 Deploying to Vercel
+
+To deploy this Nuxt 3 application with Supabase integration to **Vercel**, follow these steps:
+
+### 1. Set Up Your Environment Variables
+
+Configure the following environment variables in your **Vercel Project Settings** (`Settings -> Environment Variables`):
+
+| Variable Name | Description / Example Value |
+| --- | --- |
+| `DATABASE_URL` | Transaction Mode connection string. E.g.: `postgresql://postgres.awfdwhgeboiwgnflzqoi:muffyn-space2@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true` |
+| `DIRECT_URL` | Session Mode direct connection string (Port 5432). E.g.: `postgresql://postgres.awfdwhgeboiwgnflzqoi:muffyn-space2@db.awfdwhgeboiwgnflzqoi.supabase.co:5432/postgres` |
+| `VITE_SUPABASE_URL` | Your Supabase Project API endpoint. E.g.: `https://awfdwhgeboiwgnflzqoi.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | Your Supabase Project **Anon / Public Key** |
+
+*Optional (for broad framework support):*
+- `NEXT_PUBLIC_SUPABASE_URL` = `https://awfdwhgeboiwgnflzqoi.supabase.co`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` = `[Your Supabase Anon Key]`
+
+### 2. Deploy via Vercel CLI or Github
+
+1. Connect your Github repository to Vercel.
+2. Select **Nuxt** as the Framework Preset (Vercel detects this automatically).
+3. Add the environment variables listed above.
+4. Click **Deploy**.
+
