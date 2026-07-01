@@ -168,7 +168,7 @@ const onFileInput = (e: Event) => {
 
       <div class="md:col-span-2">
         <label class="block text-xs font-bold uppercase tracking-wide text-white/20 mb-1">Link Icon</label>
-        <div class="flex items-center gap-3">
+        <div class="flex flex-col sm:flex-row items-center gap-3">
           <!-- Inline Preview box -->
           <div class="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center overflow-hidden shrink-0">
             <img v-if="isCustomIcon" :src="link.icon" alt="" class="w-6 h-6 object-contain rounded" />
@@ -192,7 +192,7 @@ const onFileInput = (e: Event) => {
           </div>
 
           <!-- File upload trigger -->
-          <label :class="['flex-1 px-4 py-2.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/10 text-white/80 hover:text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 h-10', isDragActive ? 'opacity-50 pointer-events-none' : '']">
+          <label :class="['w-full sm:flex-1 px-4 py-2.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/10 text-white/80 hover:text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 h-10', isDragActive ? 'opacity-50 pointer-events-none' : '']">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
             </svg>
